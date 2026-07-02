@@ -1,0 +1,68 @@
+<div class="min-w-sm max-w-2xl h-full relative p-5 bg-white text-black border border-black rounded-lg cursor-default text-center">
+  <button (click)="difficulty = 'easy'" class="rounded border border-black py-2 px-4 mt-4">Fácil</button>
+  <button (click)="difficulty = 'hard'" class="rounded border border-black py-2 px-4 mt-4">Difícil</button>
+
+  <!-- CANTIDAD -->
+  <form class="max-w-xs mx-auto my-4">
+    <label for="counter-input" class="block my-2 text-sm font-medium text-heading">Cantidad:</label>  
+    <small>Usa las teclas ↑ ↓</small>
+    <div class="relative flex items-center justify-center">
+      <button type="button" id="dec-btn" class="flex items-center justify-center text-body bg-neutral-secondary-medium box-border border border-black hover:bg-neutral-tertiary-medium hover:text-heading hover:border-gray-500 rounded-full text-sm h-6 w-6 cursor-pointer" (click)="updateQty(quantity - 1)">
+        <svg class="w-3 h-3 text-heading" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14" />
+        </svg>        
+      </button>
+  
+      <input type="text" id="counter-input" name="quantity" min="1" max="25" maxlength="2" class="shrink-0 text-heading border-0 bg-transparent text-sm font-normal appearance-none focus:outline-none focus:ring-0 max-w-[2.5rem] text-center cursor-default select-none pointer-events-auto" [(ngModel)]="quantity" (ngModelChange)="updateQty(quantity)" (keydown)="onKeyDown($event)" required readonly>
+           
+      <button type="button" id="inc-btn" class="flex items-center justify-center text-body bg-neutral-secondary-medium box-border border border-black hover:bg-neutral-tertiary-medium hover:text-heading hover:border-gray-500 rounded-full text-sm h-6 w-6 cursor-pointer" (click)="updateQty(quantity + 1)">
+        <svg class="w-3 h-3 text-heading" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5" />
+        </svg>
+      </button>
+    </div>
+  </form>
+
+  <!-- FÁCIL -->
+  @if(difficulty === 'easy') {
+    <form class="max-w-sm mx-auto">   
+      <label for="search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+      <div class="relative">
+        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+          <svg class="w-4 h-4 text-body" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/></svg>
+        </div>
+        <input type="search" id="search" class="block w-full p-2.5 ps-9 bg-white border-0 border-b-2 border-gray-300 text-heading text-sm capitalize rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body" placeholder="Álbum, artista, canción, palabra clave..." required [(ngModel)]="search" [ngModelOptions]="{ standalone: true }">
+        <button type="button" class="absolute end-1.5 bottom-1.5 text-white bg-brand hover:bg-brand-strong box-border border border-transparent focus:outline-none focus:ring-0 shadow-xs font-medium leading-5 rounded text-xs px-3 py-1.5 focus:outline-none">Search</button>
+      </div>
+    </form>
+  }
+  
+  <!-- DIFICIL -->
+  @if(genres$ | async; as genres) { 
+    @if (difficulty === 'hard') {
+      <form class="max-w-sm mx-auto"> 
+        <label for="underline_select" class="sr-only">Genre</label> 
+        <select id="underline_select" class="block w-full py-2.5 ps-0 text-sm text-black bg-white border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-black cursor-pointer hover:border-black transition duration-200" [(ngModel)]="genre" [ngModelOptions]="{ standalone: true }">
+          <option [ngValue]="null" disabled>Elige el género:</option> 
+          @for (genre of genres; track genre.id) { 
+            <option [value]="genre.name.toLowerCase()">{{ genre.name }}</option> 
+          }
+        </select>
+      </form>
+    }     
+  }
+
+  <button class="rounded border border-black py-2 px-4 mt-4 hover:bg-gray-200 cursor-pointer disabled:opacity-50 disabled:hover:bg-transparent disabled:cursor-default"
+    [disabled]="(difficulty === 'easy' && !search) || (difficulty === 'hard' && !genre)" (click)="sendParams()">Iniciar</button> <!-- [!]search?.trim()-->
+</div>
+
+<!--
+  * NIVEL DE DIFICULTAD: FACIL = EL USUARIO BUSCA EL ARTISTA/PALABRA (https://api.deezer.com/search?q=eminem)
+  * NIVEL DE DIFUCULTAD: DIFICIL = SE OBTIENEN LAS CANCIONES DE ACUERDO A UNA PLAYLIST, aún no se si por género seleccionado
+
+  https://api.deezer.com/genre -> SE OBTIENE ÚNICAMENTE EL NOMBRE (SELECCIONADO DE LA LISTA)
+  https://api.deezer.com/search/playlist?q=rock -> SE HACE LA BÚSQUEDA DE ACUERDO AL NOMBRE
+-->
+
+
+

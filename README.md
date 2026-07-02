@@ -57,3 +57,10 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+
+
+## Notas
+
+Se creó un proxy para redirigir las peticiones a Deezer y evitar las restricciones CORS del navegador
+De esta forma la aplicación consume rutas como ('/deezer/...') en lugar de acceder directamente a ('https://api.deezer.com')

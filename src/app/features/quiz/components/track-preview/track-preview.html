@@ -1,0 +1,12 @@
+<div class="w-full h-full flex justify-center items-center flex-wrap p-2 bg-green-500">
+    <img class="w-48 rounded-lg border border-black" src="{{ albumCover }}" alt="Álbum">
+
+    <p class="w-full text-sm sm:text-sm lg:text-base leading-6 tracking-wide py-2 mt-2 border-t-1 border-dashed">Identifica la canción</p>
+
+    <div class="w-full flex justify-center items-center flex-nowrap gap-4 bg-purple-500">
+        <audio #audioPlayer [src]="preview" (ended)="onPreviewEnded()"></audio>
+        <button class="cursor-pointer transition hover:text-gray-200" (click)="togglePlay()">{{ isPlaying ? '&#xf04c;' : '&#xf04b;' }}</button>
+
+        <img class="h-[35px]" src="/spotify-code.svg" alt="">
+    </div>
+</div>
