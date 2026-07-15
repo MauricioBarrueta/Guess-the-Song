@@ -1,33 +1,30 @@
 @if (isVisible) {
-<div id="modal" class="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-black/30 backdrop-blur-md cursor-default">
-    <div class="p-4 w-full max-w-lg">
-        <div class="relative bg-[var(--flame)] text-white border border-white rounded-lg shadow-3d">
-            <div class="p-4 text-center">
-                <button class="group absolute top-0 right-0 w-10 h-10 flex items-center justify-center cursor-pointer"
-                    (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false" (click)="isVisible = false">
-                    <div class="w-5 h-5 bg-[#b71c1c] rounded flex items-center justify-center drop-3d opacity-85">
-                        <i class="fa-solid fa-xmark inline-block text-white text-[10px] one-time-animation"
-                            [ngClass]="mouseEnter ? 'fa-shake' : ''"></i>
-                    </div>
-                </button>
-                <span class="emoji w-12 h-12 text-5xl text-shadow-3d text-center" [innerHTML]="modalData.icon"></span>
-                <pre class="mb-5 text-xs lg:text-sm text-black">{{ modalData.lyrics}}</pre>
-
-                <div class="flex justify-between gap-4">
-                    <button type="button" (click)="confirm()" class="text-xs sm:text-xs lg:text-sm w-full text-[var(--jet)] whitespace-nowrap bg-white hover:bg-[var(--jet-light)] py-3 px-4 border-b-4 border-[var(--jet-dark)] hover:border-[var(--jet)] hover:text-white rounded-lg cursor-pointer transition-all duration-200 ease-in-out flex items-center justify-center gap-2">
-                        <span class="emoji text-shadow-3d">✔️</span> {{ modalData.confirmText }}
-                    </button>
-
-                    @if (modalData.cancelText) {
-                        <button type="button" (click)="cancel()" class="text-xs sm:text-xs lg:text-sm w-full whitespace-nowrap bg-[var(--jet)] hover:bg-[var(--jet-light)] font-bold py-3 px-4 border-b-4 border-[var(--jet-dark)] hover:border-[var(--jet)] rounded-lg cursor-pointer transition-all duration-200 ease-in-out text-white flex items-center justify-center gap-2">
-                            <span class="emoji text-shadow-3d">❌</span> {{ modalData.cancelText }}
-                        </button>
-                    }
+    <div id="modal" class="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-black/30 backdrop-blur-md cursor-default">
+        <div class="p-4 w-full max-w-lg">
+            <div class="relative bg-[var(--pacific-cyan)] text-white border border-white rounded">
+                <div class="p-4 text-center">  
+                    <span class="w-full text-base sm:text-base lg:text-xl font-normal tracking-wide pb-2 text-shadow-3d" [innerHTML]="modalData.title"></span>                  
                     
+                    <div class="text-sm lg:text-base leading-7 my-4 whitespace-pre-wrap" [ngClass]="modalData.type != 'confirm' ? 'text-left' : 'text-center text-gray-200'">{{ modalData.content }}</div>
+
+                    <!--! AÚN NO FUNCIONA  -->
+                    @if (modalData.type != 'confirm') {
+                        <span class="text-xs text-center tracking-wide text-gray-200 whitespace-nowrap">Te queda x segundos</span>
+                    }
+
+                    <div class="flex gap-4 pt-4" [ngClass]="modalData.type != 'confirm' ? 'justify-center' : 'justify-between'">
+                        <button type="button" (click)="confirm()" class="w-1/2 flex items-center justify-center bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-xs sm:text-xs md:text-sm lg:text-base font-medium py-3 px-4 border-b-4 border-[var(--night)] hover:border-white rounded-lg cursor-pointer transition-all duration-200">
+                            {{ modalData.confirmText }}
+                        </button>
+
+                        @if (modalData.type == 'confirm') {
+                            <button type="button" (click)="cancel()" class="w-1/2 flex items-center justify-center bg-[var(--dolphin-navy)] hover:bg-[var(--dusk-blue)] text-xs sm:text-xs md:text-sm lg:text-base font-medium py-3 px-4 border-b-4 border-[var(--night)] hover:border-white rounded-lg cursor-pointer transition-all duration-200">
+                                {{ modalData.cancelText }}
+                            </button>
+                        }                                           
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
 }

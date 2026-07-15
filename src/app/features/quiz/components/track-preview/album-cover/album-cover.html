@@ -1,0 +1,30 @@
+<div class="relative inline-block ">
+    <div class="relative overflow-hidden rounded-sm border border-black bg-gray-100 p-1 drop-3d">
+
+        <!-- Borde interior -->
+        <div class="absolute inset-1 rounded-sm border border-white/40 pointer-events-none"></div>
+
+        <!-- Bisagra izquierda -->
+        <div class="absolute left-0 top-0 h-full w-5 bg-gray-200 border-r border-gray-400">
+            <div class="absolute right-3 top-0 h-full w-px bg-white/70"></div>
+            <div class="absolute right-2 top-0 h-full w-px bg-gray-500/40"></div>
+        </div>
+        
+        <!-- Círculos del CD -->
+        <div class="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2  w-16 h-16 rounded-full border border-white/20 pointer-events-none"></div>
+        
+        <div class="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full border border-gray-500/15 pointer-events-none"></div>
+
+        <!-- Centro -->
+        <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-gray-400/15 border border-gray-500/20 pointer-events-none"></div>
+
+        <!-- Reflejo diagonal -->
+        <div class="absolute inset-0 bg-gradient-to-br from-white/45 via-white/10 to-transparent pointer-events-none"></div>
+
+        <!-- Reflejo del lomo -->
+        <div class="absolute top-0 left-5 h-full w-8 bg-gradient-to-r from-white/20 to-transparent pointer-events-none"></div>
+
+        <!-- Carátula -->
+        <img class="relative ml-5 w-38 rounded-[2px]" [src]="albumCover" title="Album">
+    </div>
+</div>

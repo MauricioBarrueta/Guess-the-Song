@@ -28,3 +28,19 @@
 -- i = C → lo intercambia con A → [C, D, A, B]
 -- i = B → puede quedarse igual → [C, D, A, B]
 -- Resultado → [C, D, A, B]
+
+
+# Set
+## Colección que almacena valores únicos, por lo que NO permite elementos duplicados. Útil cuando solo importa saber si un elemento existe o no
+## Métodos más comunes:
+- add(valor) → agrega un elemento
+- has(valor) → verifica si un elemento existe
+- clear() → elimina todos los elementos
+
+# Map
+## Colección que almacena datos en pares clave–valor. A diferencia de un objeto ({}), permite utilizar cualquier tipo de dato como clave y ofrece métodos específicos para gestionar la colección
+## Métodos más comunes:
+- set(clave, valor) → agrega o actualiza un elemento
+- get(clave) → obtiene el valor asociado a una clave
+- has(clave) → verifica si una clave existe
+- clear() → elimina todos los elementos

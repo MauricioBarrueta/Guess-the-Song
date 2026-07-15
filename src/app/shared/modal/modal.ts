@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ModalService } from './service/modal-service';
 import { ModalInterface } from './interface/modal';
 import { CommonModule } from '@angular/common';
@@ -9,26 +9,28 @@ import { CommonModule } from '@angular/common';
   templateUrl: './modal.html',
   styleUrl: './modal.scss',
 })
-export class Modal {
+export class Modal implements OnInit {
 
   constructor(private modalService: ModalService) {}
-
+  
   mouseEnter: boolean = false
-  isVisible = false
+  isVisible: boolean = false
+
+  // remainingSec!: number
   
   /* Se inicializa la interface para evitar errores por 'undefined' */
   modalData: ModalInterface = {
-    icon: '',
-    lyrics: '',
+    title: '',
+    content: '',
     onConfirm: () => {},
-    onCancel: () => {}
+    onCancel: () => {},
   }
 
   ngOnInit() {
     /* Se reciben los valores desde el componente donde fue llamado el Modal */
     this.modalService.modalData$.subscribe(data => {
       this.modalData = data
-      this.isVisible = true
+      this.isVisible = true      
     })
   }
 

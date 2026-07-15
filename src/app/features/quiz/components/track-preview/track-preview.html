@@ -1,12 +1,22 @@
-<div class="w-full h-full flex justify-center items-center flex-wrap p-2 bg-green-500">
-    <img class="w-48 rounded-lg border border-black" src="{{ albumCover }}" alt="Álbum">
+<div class="w-full flex justify-center items-center flex-wrap">
 
-    <p class="w-full text-sm sm:text-sm lg:text-base leading-6 tracking-wide py-2 mt-2 border-t-1 border-dashed">Identifica la canción</p>
+    <app-album-cover [albumCover]="albumCover"></app-album-cover>
+    
+    <p class="w-full text-sm sm:text-sm lg:text-base xl:text-lg text-center py-2 mt-2"
+        [textContent]="instrText ? 'Escucha el fragmento y adivina la canción' : 'Vuelve a escuchar el fragmento'"></p>
 
-    <div class="w-full flex justify-center items-center flex-nowrap gap-4 bg-purple-500">
+    <div class="w-full flex justify-center items-center flex-nowrap mt-1">
         <audio #audioPlayer [src]="preview" (ended)="onPreviewEnded()"></audio>
-        <button class="cursor-pointer transition hover:text-gray-200" (click)="togglePlay()">{{ isPlaying ? '&#xf04c;' : '&#xf04b;' }}</button>
+        <button class="w-[130px] flex items-center justify-center gap-2 bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-xs md:text-sm font-medium py-3 px-4 border-b-4 border-[var(--night)] hover:border-white rounded-l-lg cursor-pointer transition-all duration-200 disabled:bg-[var(--dolphin-navy)] hover:disabled:bg-[var(--dolphin-navy)] hover:disabled:border-[var(--night)] disabled:text-[var(--dark-silver)] disabled:cursor-not-allowed"
+            (click)="togglePlay()" [disabled]="!hasPreview" [title]="hasPreview ? 'Reproducir' : 'No disponible'">
+                <span class="w-4 flex justify-center mr-2" [innerHTML]="isPlaying ? '&#xf04c;' : '&#xf04b;'"></span>{{isPlaying ? 'Pausar' : 'Escuchar'}} 
+        </button>
 
-        <img class="h-[35px]" src="/spotify-code.svg" alt="">
+        <!--! NO ES RESPONSIVE -->
+        <div class="flex items-center justify-center h-[48px] appearance-none bg-white border border-b-4 border-[var(--night)] rounded-r-lg py-2 px-3 focus:outline-none focus:shadow-outline" title="Preview">
+            @for (_ of [1,2,3,4,5,6]; track $index) {
+                <img class="h-[20px] filter brightness-0" src="/spotify-code.svg" alt="">
+            }
+        </div>
     </div>
 </div>

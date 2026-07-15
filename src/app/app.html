@@ -1,6 +1,8 @@
-<main class="relative h-screen w-screen p-4 select-none">
-    <div class="relative z-10 flex h-full w-full items-center justify-center">
-        <router-outlet></router-outlet>
-    </div>
-    <app-modal></app-modal>
+<main class="relative min-h-screen w-full select-none">
+
+  <div class="relative min-h-screen w-full flex items-center justify-center p-4 transition-colors duration-500" [ngClass]="bgClass">
+    <router-outlet></router-outlet>
+  </div>
+
+  <app-modal></app-modal>
 </main>

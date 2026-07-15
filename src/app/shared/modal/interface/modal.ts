@@ -1,8 +1,9 @@
 export interface ModalInterface {
-    icon: string,
-    lyrics: string,
+    title: string,
+    content: string,
+    type?: 'info' | 'warning' | 'error' | 'success' | 'confirm'
     confirmText?: string,
     cancelText?: string,
     onConfirm: () => void,
-    onCancel?: () => void
+    onCancel?: () => void,
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ModalInterface } from '../interface/modal';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +13,5 @@ export class ModalService {
 
   showModal(data: ModalInterface) {
     this.modalDataSubject.next(data)
-    console.log(data)
   }
 }

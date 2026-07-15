@@ -18,3 +18,6 @@
 
 # join() 
 ## Une los elementos de un arreglo en una sola cadena de texto utilizando un separador.
+
+# queueMicrotask()
+## Programa una función para ejecutarse justo después de que termine la tarea actual, pero antes de que el navegador procese otras tareas como renderizados o eventos

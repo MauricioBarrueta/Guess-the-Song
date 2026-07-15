@@ -1,19 +1,19 @@
-import { ChangeDetectorRef, Component, EventEmitter, Inject, OnDestroy, OnInit, Output, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { GameService } from '../../services/game-service';
 import { catchError, Subject, takeUntil, throwError } from 'rxjs';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Playlist, PlaylistItem } from '../../interfaces/playlist';
 import { Router } from '@angular/router';
 import { Search, SearchItem } from '../../interfaces/search';
 import { ScoreResults } from '../../../../core/interfaces/score';
 import { GlobalScoreService } from '../../../../core/services/global-score-service';
 import { TrackPreview } from "../../components/track-preview/track-preview";
 import { TrackLyrics } from "../../components/track-lyrics/track-lyrics";
+import { Loader } from '../../../../shared/loader/loader';
 
 
 @Component({
   selector: 'app-game',
-  imports: [CommonModule, TrackPreview, TrackLyrics],
+  imports: [CommonModule, TrackPreview, TrackLyrics, Loader],
   templateUrl: './game.html',
   styleUrl: './game.scss',
 })
@@ -22,71 +22,53 @@ export class Game implements OnInit, OnDestroy {
   constructor(private gameService: GameService, private gScoreService: GlobalScoreService, private router: Router, @Inject(PLATFORM_ID) private platformId: Object, private cdr: ChangeDetectorRef) {}
   
   /* Parámetros */
-  genre: string = ''
-  search: string = ''
+  query: string = ''
   quantity!: number
-
-  playlistItems: PlaylistItem[] = [] /* Lista de todas las playlists obtenidas */
-  selectedPlaylist: PlaylistItem | null = null /* Playlist obtenida de manera aleatoria */
-
+  
   validSearchItems!: SearchItem[] /* Resultados que sí contienen la propiedad 'preview'*/
   gameTracks: SearchItem[] = [] /* Resultados aleatorios para cada partida de acuerdo a la cantidad ingresada */
   currentTrack!: SearchItem; /* Almacena la información de la canción correspondiente a la pregunta actual */
   currentTrackIndex = 0
   answerOptions: SearchItem[] = [] /* Almacena las 4 posibles respuestas para cada canción */
 
-  // @Output() answerSelected = new EventEmitter<SearchItem>();
-
   score: ScoreResults[] = [] /* Almacena las respuestas y el resultado de cada pregunta de la partida */
 
-  lyricsReady = false;
+  lyricsReady: boolean = false /* Estado de carga de la letra de la canción */
 
-
-  mouseEnter: boolean = false
-
-
-
-  isLoadingGame: boolean = true /* Verifica si se está cargando la partida */
+  isLoadingGame: boolean = true /* Cambia su estado cuando se almacena la letra de la 1er canción en el caché */
   private destroy$ = new Subject<void>() /* Usado por el takeUntil para finalizar todas las suscripciones activas */ 
+
+  mouseEnter: boolean = false  
 
   ngOnInit(): void {
     /* Verifica si se está ejecutando en el navegador y no en el servidor */
     if (isPlatformBrowser(this.platformId)) {
 
-      //! QUITAR AL TERMINAR PRUEBAS
-      this.quantity = 10;
-      this.search = 'The Warning';
-      
-      this.initGame()
-
-      //* DESCOMENTAR TODO ESTO TRAS PRUEBAS     
       /* Controla y recupera el parámetro del localStorage, si no existe ninguno, redirige a /Main */
-      // const genre = localStorage.getItem('genre')
-      // const search = localStorage.getItem('search')
-      // const quantity = Number(localStorage.getItem('quantity')) || 1
+      const quantity = Number(localStorage.getItem('quantity')) || 5
+      const query = localStorage.getItem('search') ?? localStorage.getItem('genre')
 
-      // this.quantity = quantity;
-
-      // if (!genre && !search) {
+      // this.quantity = quantity //! DESCOMENTAR
+      this.quantity = 5
+      
+      //! DESCOMENTAR
+      /* Si no existe ningún parámetro, regresa al inicio */
+      // if (!query) {
       //   this.router.navigate(['/main'])
       //   return
       // }
 
-      // if (genre) {
-      //   this.genre = genre
-      //   localStorage.removeItem('genre')
+      /* Se guarda la consulta utilizada para obtener las canciones */
+      // this.query = query //!DESCOMENTAR
+      this.query = 'The Warning'
+      
+      /* Limpia los datos temporales */
+      localStorage.removeItem('search')
+      localStorage.removeItem('genre')
+      localStorage.removeItem('quantity')
 
-      //   this.getPlaylistByGenre()
-      // }
-
-      // if (search) {
-      //   this.search = search
-      //   localStorage.removeItem('search')
-
-      //   this.getListBySearch()
-      // }
-
-      // localStorage.removeItem('quantity')
+      /* Obtiene las canciones */
+      this.getGameTracks(this.query)
     }
   }
 
@@ -96,165 +78,55 @@ export class Game implements OnInit, OnDestroy {
     this.destroy$.complete()
   }
 
-
-  initGame(): void {
-  this.getListBySearch();
-}
-
-
-  getPlaylistByGenre() {
-    this.gameService
-      .searchByGenre(this.genre)
+  /* Se obtiene la lista de canciones de acuerdo al parámetro de búsqueda y prepara la partida */
+  getGameTracks(param: string) {
+    this.gameService.searchByParam(param)
       .pipe(
-        // tap((res: Playlist) => {
-        //   this.playlist$ = res
-        // }),
         catchError((error) => {
-          return throwError(() => error);
+          return throwError(() => error)
         }),
       )
       .subscribe({
-        next: (res: Playlist) => {
-          /* Se guarda la lista de playlist en el array */
-          this.playlistItems = res.data;
+        next: (res: Search) => {
 
-          //! AÚN NO DEFINO EL SI SE FILTRAN O NO, Y EL LÍMITE
-          /* Se filtran las playlist con +20 canciones */
-          const validPlaylists = this.playlistItems.filter((p) => p.nb_tracks >= 20);
+          /* Filtra las canciones con preview, verifica que existan resultados válidos y los almacena */
+          const validTracks = res.data.filter((t) => t.preview)
+          if (!validTracks.length) {
+            console.warn('No se encontraron tracks válidas')
+            return
+          }          
+          this.validSearchItems = validTracks
 
-          if (!validPlaylists.length) {
-            console.warn('No hay playlists válidas');
-            return;
-          }
+          /* Se mezclan aleatoriamente las canciones usando Fisher–Yates */
+          const shuffled = this.gameService.shuffle([...validTracks])
 
-          /* Se elige una playlist de manera aleatoria y se almacena */
-          const randomPlaylist = validPlaylists[Math.floor(Math.random() * validPlaylists.length)];
-          this.selectedPlaylist = randomPlaylist;
+          /* Evita pedir más canciones de las disponibles */
+          const amount = Math.min(this.quantity, validTracks.length)          
+          
+          /* Se asignan las canciones de la partida de acuerdo a la cantidad ingresada */
+          this.gameTracks = shuffled.slice(0, amount)
+          this.currentTrackIndex = 0
+          this.currentTrack = this.gameTracks[this.currentTrackIndex]          
 
-          console.log('Playlist elegida: ', this.selectedPlaylist);
-
-          // Próximo paso
-          // this.getTracks(randomPlaylist.id);
+          /* Espera únicamente la letra de la primera canción */
+          this.gameService.preloadTrackLyrics(this.currentTrack)
+            .pipe(
+              takeUntil(this.destroy$)
+            )
+            .subscribe(() => {
+              this.generateAnswers()
+              this.isLoadingGame = false
+              this.cdr.detectChanges()
+              
+              /* Precarga en segundo plano la letra de la siguiente canción */
+              if (this.gameTracks.length > 1) {
+                this.gameService.preloadTrackLyrics(this.gameTracks[1]).subscribe()
+              }
+            }) 
         },
-        error: (err) => {
-          console.error('ERROR:', err);
-        },
+        error: (err) => { console.error('ERROR:', err); },
       });
   }
-
-  /* Se obtiene la lista de canciones de acuerdo al parámetro de búsqueda y prepara la partida */
-  // getListBySearch() {
-  //   this.gameService.searchByParam(this.search)
-  //     .pipe(
-  //       catchError((error) => {
-  //         return throwError(() => error)
-  //       }),
-  //     )
-  //     .subscribe({
-  //       next: (res: Search) => {
-
-  //         /* Filtra las canciones con preview, verifica que existan resultados válidos y los almacena */
-  //         const validTracks = res.data.filter((t) => t.preview)
-  //         if (!validTracks.length) {
-  //           console.warn('No se encontraron tracks válidas')
-  //           return
-  //         }          
-  //         this.validSearchItems = validTracks
-
-  //         /* Se mezclan aleatoriamente las canciones usando Fisher–Yates */
-  //         const shuffled = this.gameService.shuffle([...validTracks])
-
-  //         /* Evita pedir más canciones de las disponibles */
-  //         const amount = Math.min(this.quantity, validTracks.length)
-
-  //         /* Se asignan las canciones de la partida de acuerdo a la cantidad ingresada */
-  //         this.gameTracks = shuffled.slice(0, amount)
-  //         this.currentTrack = this.gameTracks[this.currentTrackIndex]
-  //         this.generateAnswers()
-
-  //         this.cdr.detectChanges() /* Detecta los cambios, previene error */          
-  //       },
-  //       error: (err) => { console.error('ERROR:', err); },
-  //     });
-  // }
-  getListBySearch() {
-  this.gameService.searchByParam(this.search)
-    .pipe(
-      catchError((error) => {
-        console.error('ERROR SEARCH:', error);
-        return throwError(() => error);
-      }),
-    )
-    .subscribe({
-      next: (res: Search) => {
-
-        console.log('===== SEARCH COMPLETADA =====');
-
-        /* Filtra las canciones con preview */
-        const validTracks = res.data.filter((t) => t.preview);
-
-        console.log('Tracks válidas:', validTracks.length);
-
-        if (!validTracks.length) {
-          console.warn('No se encontraron tracks válidas');
-          return;
-        }
-
-        this.validSearchItems = validTracks;
-
-        /* Se mezclan aleatoriamente */
-        const shuffled = this.gameService.shuffle([...validTracks]);
-
-        /* Cantidad para la partida */
-        const amount = Math.min(this.quantity, validTracks.length);
-
-        this.gameTracks = shuffled.slice(0, amount);
-
-        console.log('gameTracks:', this.gameTracks.length);
-        console.log('Primer track:', this.gameTracks[0]);
-
-        /* Inicializa la partida */
-        this.currentTrackIndex = 0;
-
-        console.log('Índice:', this.currentTrackIndex);
-
-        this.currentTrack = this.gameTracks[this.currentTrackIndex];
-
-        console.log('currentTrack asignado:', this.currentTrack);
-
-        this.generateAnswers();
-
-        console.log('answerOptions:', this.answerOptions);
-
-        /* Ya está lista la información, oculta loader */
-        this.isLoadingGame = false;
-
-        console.log('isLoadingGame:', this.isLoadingGame);
-
-        this.cdr.detectChanges();
-
-        /* Precarga de letras en segundo plano */
-        console.log('===== INICIANDO PRELOAD =====');
-
-        this.gameService.preloadTracksLyrics(this.gameTracks)
-          .pipe(takeUntil(this.destroy$))
-          .subscribe({
-            next: () => {
-              console.log('✅ PRELOAD NEXT');
-            },
-            complete: () => {
-              console.log('🏁 PRELOAD COMPLETE');
-            },
-            error: (err) => {
-              console.error('❌ PRELOAD ERROR:', err);
-            }
-          });
-      },
-      error: (err) => {
-        console.error('ERROR:', err);
-      },
-    });
-}
 
   /* Genera las opciones de respuesta para la pregunta actual, mezclando la canción correcta con 3 incorrectas */
   generateAnswers() {
@@ -275,6 +147,11 @@ export class Game implements OnInit, OnDestroy {
     return selected === correct
   }
 
+  /* Actualiza el estado de carga de la letra de la canción actual */
+  onLyricsLoaded(status: boolean) {
+    this.lyricsReady = status
+  }
+
   /* Registra la respuesta de cada pregunta, evita duplicados y envía los resultados al finalizar la partida */  
   onAnswerSelected(answer: string) {    
     /* Verifica si la pregunta actual ya fue respondida */
@@ -283,6 +160,7 @@ export class Game implements OnInit, OnDestroy {
     if(!isAnswered) {
       this.score.push({
         index: this.currentTrackIndex,
+        album: this.currentTrack.album.cover_medium,
         preview: this.currentTrack.preview,
         selectedTrack: answer,
         correctTrack: this.currentTrack.title,
@@ -301,29 +179,22 @@ export class Game implements OnInit, OnDestroy {
   /* Verifica el estado de cada pregunta, si ya fue respondida o no */
   alreadyAnswered(index: number): boolean {
     return this.score.some(question => question.index === index)
-  } 
+  }   
 
-
-
-
-
-  onLyricsLoaded(status: boolean) {
-  this.lyricsReady = status;
-}
-
-
-
-
-
-
-
-  /* Controla la navegación entre preguntas, no sin antes verificar si no se encuentra en la primera o en la última */
+  /* Controla la navegación entre preguntas, no sin antes verificar si no se encuentra en la primera o en la última */  
   nextQuestion() {
     if (this.currentTrackIndex >= this.gameTracks.length - 1) return
 
     this.currentTrackIndex++
     this.currentTrack = this.gameTracks[this.currentTrackIndex]
     this.generateAnswers()
+
+    /* Precarga la letra de la siguiente canción */
+    const nextIndex = this.currentTrackIndex + 1
+    if (nextIndex < this.gameTracks.length) {
+      this.gameService.preloadTrackLyrics(this.gameTracks[nextIndex])
+        .subscribe()
+    }
   }
 
   prevQuestion() {

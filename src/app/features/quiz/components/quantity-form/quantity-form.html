@@ -1,0 +1,21 @@
+ <form class="w-full">
+    <label for="counter-input" class="block text-sm sm:text-sm lg:text-base xl:text-lg mb-1 text-left">Cantidad de canciones</label> 
+    
+    <div class="flex items-center justify-start flex-wrap mb-2">
+        <div class="flex justify-end">
+            <button type="button" id="dec-btn" class="h-[45px] bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] font-medium py-2 px-4 border-b-4 border-[var(--night)] hover:border-white rounded-l-lg cursor-pointer transition-all duration-200" (click)="updateQty(quantity - 5)">
+                -
+            </button>
+        </div>
+        <div class="w-20 shrink-0 flex justify-center">
+            <input type="text" id="counter-input" name="quantity" min="5" max="25" maxlength="2" step="5" class="w-full h-[45px] text-center bg-white text-[var(--night)] text-sm font-normal border border-b-4 border-[var(--night)] appearance-none focus:outline-none focus:ring-0 cursor-default select-none" [(ngModel)]="quantity" (ngModelChange)="updateQty(quantity)" (keydown)="onKeyDown($event)" required readonly>
+        </div>
+        <div class="flex justify-start">
+            <button type="button" id="inc-btn" class="h-[45px] bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] font-medium py-2 px-4 border-b-4 border-[var(--night)] hover:border-white rounded-r-lg cursor-pointer transition-all duration-200" (click)="updateQty(quantity + 5)">
+                +
+            </button>
+        </div>
+        
+        <small class="w-full text-[10px] text-left tracking-wide text-gray-300 whitespace-nowrap mt-2 ml-5">O usa las teclas ↑ ↓</small>
+    </div>
+</form>

@@ -1,36 +1,10 @@
-<div class="w-full h-full flex justify-center items-center flex-wrap p-2">
+<div class="flex flex-row items-center justify-end gap-2 text-white border-b-2 border-dashed my-2 pb-2">  
+    <span class="text-xs text-center tracking-wider leading-7 text-gray-300 whitespace-nowrap">
+        <i class="fa-solid {{ lyricsMessage.icon }} mr-2"></i>{{ lyricsMessage.text }}
+    </span>
 
-  <p class="w-full text-center mb-3 bg-white text-black">
-    @if (isLoadingLyrics) {
-      <p>🔎 Buscando la letra...</p>
-    } @else if (!isLyricsAvailable) {
-      <p>🚫 Pista no disponible para esta canción.</p>
-    } @else if (!hasViewedLyrics) {
-      <p>⚠️ Solo tienes una oportunidad para ver la pista.</p>
-    } @else {
-      <p>✅ Ya utilizizaste tu pista.</p>
-    }
-  </p>
-
-  <button
-    class="rounded border border-black py-2 px-4 mt-4 cursor-pointer disabled:bg-gray-200"
-      [disabled]="isLoadingLyrics || !isLyricsAvailable || hasViewedLyrics" (click)="openModal()">
-    Ver pista
-  </button>
-
-
-
+    <button type="button" class="flex items-center bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] py-3 px-4 border-b-4 border-[var(--night)] hover:border-white rounded-lg cursor-pointer transition-all duration-200 disabled:bg-[var(--dolphin-navy)] hover:disabled:bg-[var(--dolphin-navy)] hover:disabled:border-[var(--night)] disabled:text-[var(--dark-silver)] disabled:cursor-not-allowed"
+        [disabled]="isLoadingLyrics || !isLyricsAvailable || hasViewedLyrics" (click)="openModal()" title="Ver pista" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
+            <i class="fa-solid fa-lightbulb one-time-animation text-sm" [ngClass]="mouseEnter ? 'fa-shake' : ''"></i>  
+    </button>
 </div>
-
-  <!--! ESTE SE QUITA, Y gameService SE CAMBIA A private -->
-  <button class="cursor-pointer border border-black bg-white text-black" (click)="gameService.clearLyricsCache()">Borrar caché</button>
-
-<!--
-    * SOLO 1 OPORTUNIDAD DE VER LA LETRA POR CANCIÓN
-    * USAR LA LÓGICA DE SI YA FUE RESPONDIDA O NO PARA HACER ESTA ACCIÓN
-    * AGREGAR TIEMPO AL MODAL, DESPUES DE X SEGUNDOS SE CIERRA Y YA NO SE PUEDE VOLVER A ABRIR
--->
-
-<!--
-    ! HASTA AHORITA YA SOLAMENTE DEJA VER 1 VEZ LA LETRA, FALTA QUE SE GUARDE
--->

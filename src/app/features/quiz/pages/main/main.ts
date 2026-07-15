@@ -4,59 +4,63 @@ import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { Genre, GenreItem } from '../../interfaces/genre';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { QuantityForm } from '../../components/quantity-form/quantity-form';
+import { ModalService } from '../../../../shared/modal/service/modal-service';
+import { Loader } from '../../../../shared/loader/loader';
 
 @Component({
   selector: 'app-main',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, QuantityForm, Loader],
   templateUrl: './main.html',
   styleUrl: './main.scss',
 })
 export class Main implements OnInit {
-  constructor(private genreService: GenreService) {}
+  
+  constructor(private genreService: GenreService, private modalService: ModalService) {}
 
+  difficulty: 'easy' | 'hard' | null = null
   search!: string;
   genres$!: Observable<GenreItem[]>
-  genre: string | null = null;
+  genre: string | null = null
+  quantity: number = 5
 
-  difficulty: 'easy' | 'hard' = 'easy';
-
-  quantity: number = 1;
+  mouseEnter: boolean = false
 
   ngOnInit(): void {
-    // this.getAllGenres() //! DESCOMENTAR AL TERMINAR PRUEBAS
+    this.getAllGenres()
   }
-
-  /* Controla la cantidad ingresada, impidiendo que sea mayor al límite */
-  updateQty(value: number) {
-    this.quantity = Math.min(25, Math.max(1, value));
-  }
-
-  /* Verifica si se presionaron las teclas (+ -) o (↑ ↓) para incrementar/decrementar la cantidad sin presionar los botones */
-  onKeyDown(event: KeyboardEvent) {
-    switch (event.key) {
-      case '+':
-      case 'ArrowUp':
-        event.preventDefault()
-        this.updateQty(this.quantity + 1)
-        break
-
-      case '-':
-      case 'ArrowDown':
-        event.preventDefault()
-        this.updateQty(this.quantity - 1)
-        break
-    }
-  }
-
-  /* Se obtiene la lista de todos los géneros */
+  
+  /* Se obtiene la lista de todos los géneros */  
   getAllGenres() {
-    this.genres$ = this.genreService.getAllGenres().pipe(map((res) => res.data));
+    this.genres$ = this.genreService.getAllGenres()
+      .pipe(
+        map((res) => {
+          /* Obtiene todos los géneros a excepción del id '0'('All'), toma el nuevo primer elemento, regresa '' si devuelve null o undefined */
+          const genres = res.data.filter((g) => g.id !== 0)
+          this.genre = genres[0]?.name.toLowerCase() ?? ''
+          return genres
+        })
+      );
   }
 
   /* Manda el parámetro de acuerdo a la dificultad que se seleccionó */
   sendParams(): void {
-    const value = this.difficulty === 'easy' ? this.search?.trim() : this.genre;
-    if (!value) return;
-    this.genreService.sendParamToGame(value, this.difficulty, this.quantity);
+    const value = this.difficulty === 'easy' ? this.search?.trim() : this.genre
+
+    if (!value || !this.difficulty) return
+
+    this.genreService.sendParamToGame(value, this.difficulty, this.quantity)
+  }
+
+  openModal(): void {
+    this.modalService.showModal({
+      title: '¿Seguro que deseas cambiar la dificultad?',
+      content: 'Se perderá la configuración actual de la partida',
+      type: 'confirm',
+      confirmText: 'Confirmar',
+      cancelText: 'Cancelar',
+      onConfirm: () => this.difficulty = null,
+      onCancel: () => {}
+    });
   }
 }

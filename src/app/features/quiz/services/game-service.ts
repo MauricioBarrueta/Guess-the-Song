@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { catchError, from, map, mergeMap, Observable, of, tap, toArray } from 'rxjs';
+import { catchError, Observable, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Search, SearchItem } from '../interfaces/search';
-import { Playlist } from '../interfaces/playlist';
 import { environment } from '../../../../environments/environment.development';
 import { Lyrics } from '../interfaces/lyrics';
 
@@ -10,95 +9,52 @@ import { Lyrics } from '../interfaces/lyrics';
   providedIn: 'root',
 })
 export class GameService {
-  private readonly api = '/deezer';
 
-  private lyricsCache = new Map<string, Lyrics | null>();
+  private readonly api = '/deezer' 
 
-
-    private viewedLyrics = new Set<number>();
-
+  private lyricsCache = new Map<string, Lyrics | null>() /* Guarda en caché las letras consultadas para reutilizarlas durante la partida */
+  
+  private viewedLyrics = new Set<number>() /* Registra las preguntas cuya letra ya fue visualizada 1 vez */
 
   constructor(private http: HttpClient) {}
 
   /* Obtiene la lista de resultados que coincidan con el valor del parámetro */
   searchByParam(param: string): Observable<Search> {
-    return this.http.get<Search>(`${this.api}/search?q=${param}&limit=100`);
-  }
-
-  //! FALTA AGREGAR &limit
-  /* Se obtiene la lista de playlist de acuerdo al valor del parámetro del género */
-  searchByGenre(genre: string): Observable<Playlist> {
-    return this.http.get<Playlist>(`${this.api}/search/playlist?q=${genre}`);
-  } 
+    return this.http.get<Search>(`${this.api}/search?q=${param}&limit=150`)
+  }  
 
   /* Se obtiene la letra de la canción y se almacena en caché para evitar solicitudes repetidas */
-  // getTrackLyrics(artist?: string, track?: string): Observable<Lyrics | null> {
-  //   const key = `${artist?.toLowerCase().trim()}-${track?.toLowerCase().trim()}` /* Clave única por canción */
-
-  //   /* Verifica si la letra ya existe en caché y la devuelve */
-  //   const cachedLyrics = this.lyricsCache.get(key)
-  //   if (cachedLyrics !== undefined) {
-  //     return of(cachedLyrics);
-  //   }
-
-  //   return this.http.get<Lyrics>(`${environment.lrclibAPI}/get?artist_name=${artist}&track_name=${track}`)
-  //     .pipe(        
-  //       tap((lyrics) => {
-  //         /* Se almacena la letra en caché para futuras consultas */
-  //         this.lyricsCache.set(key, lyrics)
-  //       }),
-  //       catchError(() => {
-  //         this.lyricsCache.set(key, null);
-  //          return of(null);
-  //       }),
-  //     );
-  // }
   getTrackLyrics(artist?: string, track?: string): Observable<Lyrics | null> {
     const key = `${artist?.toLowerCase().trim()}-${track?.toLowerCase().trim()}` /* Clave única por canción */
-    
-    /* Verifica si la letra ya existe en caché y la devuelve */
-    const cachedLyrics = this.lyricsCache.get(key)
-    if (cachedLyrics !== undefined) return of(cachedLyrics)
 
-      return this.http.get<Lyrics>(`${environment.lrclibAPI}/get?artist_name=${artist}&track_name=${track}`)
-        .pipe(
-          tap((lyrics) => {
-            /* Se almacena la letra en caché para futuras consultas */
-            this.lyricsCache.set(key, lyrics)
-          }),
-          catchError(() => {
-            /* Si no existe la letra, la almacena como null para evitar que vuelva a hacer la consulta cuando se detecte un error */
-            this.lyricsCache.set(key, null)
-            return of(null)
-          })
-        );
-  }
+    /* Verifica si la letra ya existe en caché */
+    if (this.lyricsCache.has(key)) { return of(this.lyricsCache.get(key)!) }
 
-
-
-  preloadTracksLyrics(tracks: SearchItem[]): Observable<void> {
-    return from(tracks)
+    return this.http.get<Lyrics>(`${environment.lrclibAPI}/get?artist_name=${artist}&track_name=${track}`)
       .pipe(
-        /* Procesa máximo 5 canciones al mismo tiempo */
-        mergeMap((track) => this.getTrackLyrics(track.artist.name,track.title)
-          .pipe(
-            /* Si una canción no tiene letra disponible, la omite y continúa con las demás */
-            catchError(() => of(null))
-          ), 5
-        ),
-        /* Espera a que todas finalicen */
-        toArray(),
-        /* El componente no necesita el arreglo de respuestas */
-        map(() => void 0)
+        tap((lyrics) => {
+          /* Almacena la letra en caché */
+          this.lyricsCache.set(key, lyrics)
+        }),
+        catchError(() => {
+          /* Si no existe la letra, guarda null para no volver a consultarla */
+          this.lyricsCache.set(key, null)
+          return of(null)
+        })
       );
   }
 
+  /* Precarga la letra de la canción */
+  preloadTrackLyrics(track: SearchItem): Observable<Lyrics | null> {
+    const artist = encodeURIComponent(track.artist.name)
+    const title = encodeURIComponent(track.title.replace(/\(.*?\)/g, '').trim()) /* Elimina el contenido entre paréntesis, (Live), (Acoustic), etc */
 
+    return this.getTrackLyrics(artist, title)
+  }
 
   /* Borra el caché */
   clearLyricsCache(): void {
     this.lyricsCache.clear()
-    alert('Borrado') //! ESTO NO VA ***************************************************************************
   }
 
   /* Marca la letra de una pregunta como ya visualizada */

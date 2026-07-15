@@ -1,3 +1,121 @@
-@for (score of score; track $index) {
-    <p>{{ score.result }}</p>
-}
+<!-- @if (isLoading) {
+    Loader
+    <div class="min-w-sm max-w-md sm:max-w-sm lg:max-w-md h-[319px] flex items-center flex-col bg-[var(--flame)] border border-white rounded-lg shadow-3d cursor-default p-5">
+        <p class="flex items-center justify-center text-base sm:text-base lg:text-xl text-white font-black leading-8 tracking-wider text-shadow-3d mb-3">
+            Procesando resultados...<span class="emoji inline-block animate-pulse text-base not-italic ml-2">🕒</span>
+        </p>
+    
+        <div class="w-full h-full animate-pulse flex items-center space-x-4">
+            <div class="flex-1 space-y-2 py-1">
+                <div class="h-16 bg-[var(--chinese-silver)] rounded w-full"></div>
+                <div class="grid grid-cols-2 gap-2 my-2">
+                    <div class="h-16 bg-[var(--chinese-silver)] rounded"></div>
+                    <div class="h-16 bg-[var(--chinese-silver)] rounded"></div>
+                </div>            
+                <div class="h-16 bg-[var(--chinese-silver)] rounded w-full"></div>
+            </div>
+        </div>
+    </div>
+} @else { -->
+    <!-- Resumen -->
+     @if (!showingDetails) {
+        <div class="w-full lg:w-3xl p-4 cursor-default cursor-default text-center text-white">
+            <h5 class="text-lg sm:text-lg lg:text-2xl font-medium text-center tracking-wider text-shadow-3d mb-2 pb-2 border-b-2 border-dashed">Resumen de la partida</h5>
+    
+            <div class="w-full relative grid grid-cols-2 justify-center items-center my-4">
+                <div class="h-40 flex flex-col ">                    
+                    <p class="text-base sm:text-base lg:text-lg tracking-wider pb-1 flex-none">
+                        <span class="relative top-[-0.150em] text-sm text-shadow-3d text-[var(--sea-green)] mr-2">&#xf058;</span>
+                        Correctas
+                    </p>
+                    <span class="flex-grow flex items-center justify-center bg-white rounded-l-lg border-r-1 text-3xl sm:text-3xl lg:text-4xl font-black text-[var(--cherry-rose)] py-2 px-4 border-b-4 border-[var(--night)]">{{ totalCorrectAnswers }}</span>
+                </div>
+
+                <div class="h-40 flex flex-col">
+                     <p class="text-base sm:text-base lg:text-lg tracking-wider pb-1 flex-none">
+                        <span class="relative top-[-0.150em] text-sm text-shadow-3d text-[var(--light-carmine-pink)] mr-2">&#xf057;</span>
+                        Incorrectas
+                     </p>
+                    <span class="flex-grow flex items-center justify-center bg-white rounded-r-lg text-3xl sm:text-3xl lg:text-4xl font-black text-[var(--cherry-rose)] py-2 px-4 border-b-4 border-[var(--night)]">{{ totalWrongAnswers }}</span>
+                </div>
+            </div>
+    
+            <button type="submit" class="w-full sm:w-full lg:w-auto bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-xs sm:text-xs md:text-sm lg:text-base font-bold py-3 px-4 mt-4 border-b-4 border-[var(--night)] hover:border-white rounded-lg cursor-pointer transition-all duration-200 ease-in-out" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false" (click)="showingDetails = true">
+                Ver detalles<i class="fa-solid fa-circle-chevron-right one-time-animation ml-2" [ngClass]="mouseEnter ? 'fa-shake' : ''"></i>
+            </button>
+
+            <div class="flex flex-col items-center mt-6">
+                <a class="inline-block text-xs font-medium text-center text-shadow-3d tracking-wider text-[var(--dark-silver)] hover:text-white cursor-pointer transition-all duration-200" (click)="exitGameAndReset()">
+                    <span class="relative text-sm text-shadow-3d mr-2">&#xf363;</span>Nueva partida
+                </a>
+            </div>
+        </div>
+    }
+
+    <!-- Detalles -->
+    @if (showingDetails) {
+        <div class="w-full lg:w-4xl p-4 cursor-default text-white text-center">
+            <h5 class="text-lg sm:text-lg lg:text-2xl font-medium text-center tracking-wider text-shadow-3d mb-2 pb-2 border-b-2 border-dashed">Detalles de cada pregunta</h5>
+
+            <div class="relative overflow-hidden my-2">
+                <div class="relative h-auto flex items-center justify-center">
+                    @for (q of score; track $index) {
+                        @if ($index === activeSlide) {
+                            <div class="w-full">   
+                                <span class="text-xs font-medium text-[var(--dark-silver)]">Canción #{{q.index + 1}}:</span>
+
+                                <app-track-preview [preview]="q.preview" [albumCover]="q.album" [instrText]="false"></app-track-preview>
+
+                                <div class="grid grid-cols-2 gap-4 justify-center py-2 mt-2">
+                                    <div class="flex flex-col">
+                                        <label class="mb-2 text-xs sm:text-xs lg:text-base tracking-wider" for="answer">
+                                            <span class="relative top-[-0.150em] text-sm text-shadow-3d text-white mr-3 fa-solid">&#xf0a4;</span>Tu respuesta
+                                        </label>
+                                        <p id="answer" class="min-h-18 max-h-auto flex-grow flex items-center justify-center text-sm xs:text-sm lg:text-base font-medium text-black bg-white shadow-md py-2 px-4 border-b-4 rounded" [innerHTML]="q.selectedTrack" [ngClass]="q.selectedTrack === q.correctTrack ? 'border-[var(--sea-green)]' : 'border-[var(--light-carmine-pink)]'"></p>
+                                    </div>
+                                    
+                                    <div class="flex flex-col">
+                                        <label class="mb-2 text-xs sm:text-xs lg:text-base tracking-wider" for="correct">
+                                            <span class="relative top-[-0.150em] text-sm text-shadow-3d text-[var(--sea-green)] mr-3">&#xf058;</span>Respuesta correcta
+                                        </label>
+                                        <p id="correct" class="min-h-18 max-h-auto flex-grow flex items-center justify-center text-sm xs:text-sm lg:text-base font-medium text-black bg-white shadow-md py-2 px-4 border-b-4 border-[var(--sea-green)] rounded" [innerHTML]="q.correctTrack"></p>
+                                    </div>
+                                </div>
+
+                                <p class="w-full mt-2 text-sm text-gray-300 tracking-widest gap-4">
+                                    {{ q.result ? 'Correcta' : 'Incorrecta' }}<i class="text-shadow-3d ml-2" [class]="q.result ? 'fa-solid fa-circle-check text-[var(--sea-green)]' : 'fa-solid fa-circle-xmark text-[var(--light-carmine-pink)]'"></i>
+                                </p>         
+                            </div>
+                        }                        
+                    }
+                </div>
+
+                <div class="flex justify-between items-center my-4">
+                    <button (click)="prevSlide()" class="bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] font-medium py-2 px-4 border-b-4 border-[var(--night)] hover:border-white rounded-lg cursor-pointer transition-all duration-200" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
+                        <i class="fa-solid fa-caret-left one-time-animation" [ngClass]="mouseEnter ? 'fa-shake' : ''"></i>
+                    </button>
+
+                    <div class="flex gap-2 justify-center items-center flex-wrap mx-6">
+                        @for (q of score; track $index) {
+                            <button class="w-3 h-3 rounded-full drop-3d cursor-pointer transition-all duration-100" [ngClass]="$index === activeSlide ? 'bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)]' : 'bg-white hover:bg-[var(--dark-raspberry)]'" (click)="activeSlide = $index"></button>
+                        }
+                    </div>
+
+                    <button (click)="nextSlide()" class="bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] font-medium py-2 px-4 border-b-4 border-[var(--night)] hover:border-white rounded-lg cursor-pointer transition-all duration-200" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
+                        <i class="fa-solid fa-caret-right one-time-animation" [ngClass]="mouseEnter ? 'fa-shake' : ''"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="w-full sm:w-full lg:w-auto bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-xs sm:text-xs md:text-sm lg:text-base font-bold py-3 px-4 mt-2 border-b-4 border-[var(--night)] hover:border-white rounded-lg cursor-pointer transition-all duration-200 ease-in-out" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false" (click)="showingDetails = false">
+                <i class="fa-solid fa-circle-chevron-left one-time-animation mr-2" [ngClass]="mouseEnter ? 'fa-shake' : ''"></i>Volver al resumen
+            </button>
+            
+            <div class="flex flex-col items-center mt-6">
+                <a class="inline-block text-xs font-medium text-center text-shadow-3d tracking-wider text-[var(--dark-silver)] hover:text-white cursor-pointer transition-all duration-200" (click)="exitGameAndReset()">
+                    <span class="emoji relative text-sm text-shadow-3d mr-2">&#xf363;</span>Nueva partida
+                </a>
+            </div>
+        </div>
+    }
+<!-- } -->

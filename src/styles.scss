@@ -1,4 +1,37 @@
-@import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@use "tailwindcss";
+// @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cascadia+Mono:ital,wght@0,200..700;1,200..700&display=swap');
 
-* { font-family: "Roboto", sans-serif, FontAwesome; }
+* { 
+    // font-family: "Roboto", sans-serif, FontAwesome; 
+    font-family: "Cascadia Mono", sans-serif, FontAwesome; 
+}
+
+html, body { height: 100%; }
+body { margin: 0; }
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+    --cherry-rose: #b7094cff; 
+    --dark-raspberry: #a01a58ff;
+    --royal-plum: #892b64ff;
+    --velvet-purple: #723c70ff;
+    --dusty-grape: #5c4d7dff;
+    --dusk-blue: #455e89ff;
+    --rich-cerulean: #2e6f95ff;
+    --cerulean: #1780a1ff;
+    --pacific-cyan: #0091adff;
+
+    --dolphin-navy: #6B667A;
+    --night: #1F2330;
+    --dark-silver: #b0b0b0;
+    --sea-green: #2F855A;
+    --light-carmine-pink: #A53A5A; 
+    --bright-gold: #FFD54F;
+    --electric-orange: #ff5e00;
+}
+
+.text-shadow-3d { text-shadow: 2px 4px 0 rgba(26, 28, 26, 1) }
+.shadow-3d { box-shadow: 0 4px 6px rgba(0, 0, 0, 1) }
+.drop-3d { filter: drop-shadow(2px 4px 0 rgb(26, 28, 26)) }
+.one-time-animation { animation-iteration-count: 1; }
