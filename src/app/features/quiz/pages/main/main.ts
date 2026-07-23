@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { GenreService } from '../../services/genre-service';
-import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
-import { Genre, GenreItem } from '../../interfaces/genre';
+import { MainService } from '../../services/main-service';
+import {  map, Observable } from 'rxjs';
+import { GenreItem } from '../../interfaces/genre';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { QuantityForm } from '../../components/quantity-form/quantity-form';
@@ -16,7 +16,7 @@ import { Loader } from '../../../../shared/loader/loader';
 })
 export class Main implements OnInit {
   
-  constructor(private genreService: GenreService, private modalService: ModalService) {}
+  constructor(private mainService: MainService, private modalService: ModalService) {}
 
   difficulty: 'easy' | 'hard' | null = null
   search!: string;
@@ -32,7 +32,7 @@ export class Main implements OnInit {
   
   /* Se obtiene la lista de todos los géneros */  
   getAllGenres() {
-    this.genres$ = this.genreService.getAllGenres()
+    this.genres$ = this.mainService.getAllGenres()
       .pipe(
         map((res) => {
           /* Obtiene todos los géneros a excepción del id '0'('All'), toma el nuevo primer elemento, regresa '' si devuelve null o undefined */
@@ -43,13 +43,13 @@ export class Main implements OnInit {
       );
   }
 
-  /* Manda el parámetro de acuerdo a la dificultad que se seleccionó */
-  sendParams(): void {
+  /* Inicia la partida con la configuración ingresada */
+  startGame(): void {
     const value = this.difficulty === 'easy' ? this.search?.trim() : this.genre
 
     if (!value || !this.difficulty) return
 
-    this.genreService.sendParamToGame(value, this.difficulty, this.quantity)
+    this.mainService.saveGameConfig(value, this.difficulty, this.quantity)
   }
 
   openModal(): void {

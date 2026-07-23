@@ -2,8 +2,8 @@
 
     <app-album-cover [albumCover]="albumCover"></app-album-cover>
     
-    <p class="w-full text-sm sm:text-sm lg:text-base xl:text-lg text-center py-2 mt-2"
-        [textContent]="instrText ? 'Escucha el fragmento y adivina la canción' : 'Vuelve a escuchar el fragmento'"></p>
+    <p class="w-full text-base sm:text-base lg:text-lg text-center text-shadow-3d font-bold py-2 mt-1"
+        [textContent]="instrText ? 'Escucha el fragmento y adivina el título' : 'Vuelve a escuchar el fragmento'"></p>
 
     <div class="w-full flex justify-center items-center flex-nowrap mt-1">
         <audio #audioPlayer [src]="preview" (ended)="onPreviewEnded()"></audio>
@@ -12,10 +12,9 @@
                 <span class="w-4 flex justify-center mr-2" [innerHTML]="isPlaying ? '&#xf04c;' : '&#xf04b;'"></span>{{isPlaying ? 'Pausar' : 'Escuchar'}} 
         </button>
 
-        <!--! NO ES RESPONSIVE -->
-        <div class="flex items-center justify-center h-[48px] appearance-none bg-white border border-b-4 border-[var(--night)] rounded-r-lg py-2 px-3 focus:outline-none focus:shadow-outline" title="Preview">
-            @for (_ of [1,2,3,4,5,6]; track $index) {
-                <img class="h-[20px] filter brightness-0" src="/spotify-code.svg" alt="">
+        <div class="flex items-center justify-center h-[48px] bg-white border-b-4 border-[var(--night)] rounded-r-lg py-2 px-3 focus:outline-none focus:shadow-outline" title="Preview">
+            @for (_ of [1, 2, 3, 4, 5]; track $index) {
+                <img class="h-[18px] filter brightness-0" src="/spotify-code.svg" alt="" loading="eager">
             }
         </div>
     </div>

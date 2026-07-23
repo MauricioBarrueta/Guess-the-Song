@@ -17,4 +17,9 @@ export class GlobalScoreService {
   getScoreData() {
     return this.gameScore
   }
+
+  /* Se resetea el arreglo */
+  clearScoreData() {
+    this.gameScore = []
+  }
 }

@@ -8,7 +8,6 @@ import { CommonModule } from '@angular/common';
   selector: 'app-track-lyrics',
   imports: [CommonModule],
   templateUrl: './track-lyrics.html',
-  styleUrl: './track-lyrics.scss',
 })
 export class TrackLyrics implements OnInit, OnChanges, OnDestroy {
 
@@ -143,6 +142,7 @@ export class TrackLyrics implements OnInit, OnChanges, OnDestroy {
       content: this.lyrics,
       type: 'info',
       confirmText: 'Continuar',
+      autoCloseMs: 10000,
       onConfirm: () => {},
     });
   }

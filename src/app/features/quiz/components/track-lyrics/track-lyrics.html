@@ -1,10 +1,10 @@
 <div class="flex flex-row items-center justify-end gap-2 text-white border-b-2 border-dashed my-2 pb-2">  
-    <span class="text-xs text-center tracking-wider leading-7 text-gray-300 whitespace-nowrap">
+    <span class="text-xs text-center tracking-wide whitespace-nowrap">
         <i class="fa-solid {{ lyricsMessage.icon }} mr-2"></i>{{ lyricsMessage.text }}
     </span>
 
     <button type="button" class="flex items-center bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] py-3 px-4 border-b-4 border-[var(--night)] hover:border-white rounded-lg cursor-pointer transition-all duration-200 disabled:bg-[var(--dolphin-navy)] hover:disabled:bg-[var(--dolphin-navy)] hover:disabled:border-[var(--night)] disabled:text-[var(--dark-silver)] disabled:cursor-not-allowed"
         [disabled]="isLoadingLyrics || !isLyricsAvailable || hasViewedLyrics" (click)="openModal()" title="Ver pista" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
-            <i class="fa-solid fa-lightbulb one-time-animation text-sm" [ngClass]="mouseEnter ? 'fa-shake' : ''"></i>  
+            <i class="fa-solid fa-lightbulb one-time-animation text-xs" [ngClass]="mouseEnter ? 'fa-shake' : ''"></i>  
     </button>
 </div>

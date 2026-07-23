@@ -1,15 +1,16 @@
 @if (isVisible) {
     <div id="modal" class="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-black/30 backdrop-blur-md cursor-default">
-        <div class="p-4 w-full max-w-lg">
-            <div class="relative bg-[var(--pacific-cyan)] text-white border border-white rounded">
+        <div class="p-4 w-full max-w-xl">
+            <div class="relative bg-[var(--pacific-cyan)] text-white border border-[var(--night)] rounded-lg shadow-3d">
                 <div class="p-4 text-center">  
-                    <span class="w-full text-base sm:text-base lg:text-xl font-normal tracking-wide pb-2 text-shadow-3d" [innerHTML]="modalData.title"></span>                  
+                    <span class="w-full text-base sm:text-base lg:text-lg font-bold tracking-wide pb-4 text-shadow-3d" [innerHTML]="modalData.title"></span> 
                     
-                    <div class="text-sm lg:text-base leading-7 my-4 whitespace-pre-wrap" [ngClass]="modalData.type != 'confirm' ? 'text-left' : 'text-center text-gray-200'">{{ modalData.content }}</div>
+                    <div class="text-sm/7 lg:text-base/8 tracking-wider whitespace-pre-wrap" [ngClass]="modalData.type != 'confirm' ? 'text-left font-semibold mt-6 mb-4' : 'text-center text-gray-200 my-4'">{{ modalData.content }}</div>
 
-                    <!--! AÚN NO FUNCIONA  -->
                     @if (modalData.type != 'confirm') {
-                        <span class="text-xs text-center tracking-wide text-gray-200 whitespace-nowrap">Te queda x segundos</span>
+                        <span class="text-xs text-center tracking-wide text-gray-300 whitespace-nowrap">
+                            Te quedan <span class="font-black" [ngClass]="{ 'text-white': countdown > 3, 'text-[var(--bright-gold)]': countdown <= 3 && countdown > 1, 'text-[var(--electric-orange)] animate-pulse': countdown === 1}">{{ countdown }}</span> segundos
+                        </span>
                     }
 
                     <div class="flex gap-4 pt-4" [ngClass]="modalData.type != 'confirm' ? 'justify-center' : 'justify-between'">

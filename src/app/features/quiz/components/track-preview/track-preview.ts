@@ -5,7 +5,6 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-track-preview',
   templateUrl: './track-preview.html',
-  styleUrl: './track-preview.scss',
   imports: [ CommonModule, AlbumCover ]
 })
 export class TrackPreview implements OnChanges {

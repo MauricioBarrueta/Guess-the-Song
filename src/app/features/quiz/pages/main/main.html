@@ -1,100 +1,98 @@
-<div class="w-full lg:w-xl p-4 h-full relative bg-[var(--pacific-cyan)] text-white border border-[var(--night)] rounded-lg cursor-default shadow-3d text-center">
+<div class="h-full flex flex-col">
+    <div class="flex-1 flex items-center justify-center">
+        <div class="w-full lg:w-xl p-4 relative bg-[var(--pacific-cyan)] text-white border border-[var(--night)] rounded-lg shadow-3d text-center">
+            @if (difficulty === null) {
+                <div class="flex justify-center flex-wrap pb-4">            
+                    <h1 class="text-2xl sm:text-2xl lg:text-3xl font-black tracking-wider text-shadow-3d" >¿Crees ser un verdadero amante de la <span class="text-[var(--cherry-rose)] ">música</span>?</h1>   
+                    <h3 class="w-full block text-base sm:text-base lg:text-xl tracking-wider leading-7 border-b-2 border-dashed border-white my-4 pt-1 pb-6 ">Escucha fragmentos de canciones y descubre cuántas puedes reconocer</h3>
+            
+                    <span class="w-full text-base sm:text-base lg:text-xl font-bold tracking-wide pb-4 text-shadow-3d">Elige la dificultad</span>
+
+                    <button [class.selected]="difficulty === 'easy'" class="difficulty-btn-easy w-[130px] flex items-center justify-center bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-xs sm:text-xs md:text-sm lg:text-base font-medium py-3 px-4 mx-3 border-b-4 border-[var(--night)] hover:border-white rounded-lg cursor-pointer transition-all duration-200" (click)="difficulty = 'easy'" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
+                        Fácil
+                        <span class="relative inline-flex items-center justify-center ml-3 one-time-animation" [ngClass]="{ 'fa-shake': mouseEnter || difficulty === 'easy' }">
+                            <i class="fa-solid fa-sun sun-icon absolute text-[var(--bright-gold)] pointer-events-none"></i>
+                            <i class="fa-solid fa-face-laugh-beam relative z-10"></i>
+                        </span>
+                    </button>
+
+                    <button [class.selected]="difficulty === 'hard'" class="difficulty-btn w-[130px] flex items-center justify-center bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-xs sm:text-xs md:text-sm lg:text-base font-medium py-3 px-4 mx-3 border-b-4 border-[var(--night)] hover:border-white rounded-lg cursor-pointer transition-all duration-200" (click)="difficulty = 'hard'" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
+                        Difícil
+                        <span class="relative inline-flex items-center justify-center ml-3 one-time-animation" [ngClass]="{ 'fa-shake': mouseEnter || difficulty === 'hard' }">
+                            <i class="fa-solid fa-fire fire-icon absolute text-[var(--electric-orange)] pointer-events-none"></i>
+                            <i class="fa-solid fa-skull relative z-10"></i>
+                        </span>
+                    </button>
+                </div>       
+            }
+
+            @if(difficulty === 'easy') {
+                <h5 class="text-lg sm:text-lg lg:text-2xl font-medium text-center tracking-wider text-shadow-3d mb-4 pb-2 border-b-2 border-dashed">Configura la partida</h5>
+        
+                <form class="w-full">  
+                    <div class="mb-3">
+                        <label for="search" class="block text-sm sm:text-sm lg:text-base xl:text-lg mb-1 text-left">Ingresa tu búsqueda</label>
+                        <input type="search" id="search" class="w-full h-[45px] text-sm lg:text-base text-[var(--night)] capitalize placeholder:normal-case appearance-none bg-white border border-b-4 border-[var(--night)] rounded py-2 px-3 leading-normal focus:outline-none focus:shadow-outline" placeholder="Artista o canción" required [(ngModel)]="search" [ngModelOptions]="{ standalone: true }">
+                    </div>            
+
+                    <app-quantity-form [quantity]="quantity" (quantityChange)="quantity = $event"></app-quantity-form>
+
+                    <div class="flex items-center justify-between mt-6">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs sm:text-xs lg:text-sm tracking-wide">Dificultad seleccionada:</span>
+                            <span class="text-xs sm:text-xs lg:text-sm tracking-wide font-semibold">{{ difficulty === 'easy' ? 'Fácil' : 'Difícil' }}</span>
+                        </div>
+                        <button type="button" class="relative text-xs sm:text-xs lg:text-sm font-semibold text-shadow-3d hover:text-gray-200 cursor-pointer transition-all duration-200" (click)="openModal()">Cambiar &#xf363;</button>
+                    </div>
+
+                    <button class="w-full flex items-center justify-center bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-xs sm:text-xs md:text-sm lg:text-base font-medium py-3 px-4 mt-4 border-b-4 border-[var(--night)] hover:border-white disabled:bg-[var(--dolphin-navy)] hover:disabled:bg-[var(--dolphin-navy)] hover:disabled:border-[var(--night)] disabled:text-[var(--dark-silver)] disabled:cursor-not-allowed rounded-lg cursor-pointer transition-all duration-200" [disabled]="!search" (click)="startGame()">
+                        Iniciar partida
+                    </button>            
+                </form>
+
+            }
+
+            @if (difficulty === 'hard') {
+                @if(genres$ | async; as genres) { 
+                    <h5 class="text-lg sm:text-lg lg:text-2xl font-medium text-center tracking-wider text-shadow-3d mb-4 pb-2 border-b-2 border-dashed">Configura la partida</h5>
+
+                    <form class="w-full"> 
+                        <div class="mb-3">
+                            <label for="select" class="block text-sm sm:text-sm lg:text-base xl:text-lg mb-1 text-left">Elige una palabra clave</label> 
+                            <select id="select" class="w-full h-[45px] text-sm lg:text-base text-[var(--night)] bg-white border border-b-4 border-[var(--night)] rounded py-2 px-3 leading-normal hover:bg-[var(--dark-silver)] focus:outline-none focus:shadow-outline cursor-pointer transition-all duration-200" [(ngModel)]="genre" [ngModelOptions]="{ standalone: true }">
+                                @for (item of genres; track item.id) { 
+                                    <option [value]="item.name.toLowerCase()">{{ item.name }}</option> 
+                                }
+                            </select>
+                        </div>
+
+                        <app-quantity-form [quantity]="quantity" (quantityChange)="quantity = $event"></app-quantity-form>
+
+                        <div class="flex items-center justify-between mt-6">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs sm:text-xs lg:text-sm tracking-wide">Dificultad seleccionada:</span>
+                                <span class="text-xs sm:text-xs lg:text-sm tracking-wide font-semibold">{{ difficulty === 'hard' ? 'Difícil' : 'Fácil' }}</span>
+                            </div>
+                            <button type="button" class="relative text-xs sm:text-xs lg:text-sm font-semibold text-shadow-3d hover:text-gray-200 cursor-pointer transition-all duration-200" (click)="openModal()">Cambiar &#xf363;</button>
+                        </div>
+
+                        <button class="w-full flex items-center justify-center bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-xs sm:text-xs md:text-sm lg:text-base font-medium py-3 px-4 mt-4 border-b-4 border-[var(--night)] hover:border-white disabled:bg-[var(--dolphin-navy)] hover:disabled:bg-[var(--dolphin-navy)] hover:disabled:border-[var(--night)] disabled:text-[var(--dark-silver)] disabled:cursor-not-allowed rounded-lg cursor-pointer transition-all duration-200" [disabled]="!genre" (click)="startGame()">
+                            Iniciar partida
+                        </button>        
+                    </form>
+                } @else {
+                    <app-loader text="Cargando opciones..."></app-loader>
+                }        
+            }
+        </div>
+    </div>
 
     @if (difficulty === null) {
-        <div class="flex justify-center flex-wrap pb-4">            
-            <h1 class="text-2xl sm:text-2xl lg:text-3xl font-black tracking-wider text-shadow-3d" >¿Crees ser un verdadero amante de la <span class="text-[var(--cherry-rose)] text-shadow-none">música</span>?</h1>   
-            <h3 class="w-full block text-base sm:text-base lg:text-xl text-gray-300 tracking-wider leading-7 border-b-2 border-dashed border-white my-4 pt-1 pb-6 ">Escucha fragmentos de canciones y descubre cuántas puedes reconocer</h3>
-            
-            <span class="w-full text-base sm:text-base lg:text-xl font-bold tracking-wide pb-4">Elige la dificultad</span>
-
-            <button [class.selected]="difficulty === 'easy'" class="difficulty-btn-easy w-[130px] flex items-center justify-center bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-xs sm:text-xs md:text-sm lg:text-base font-medium py-3 px-4 mx-3 border-b-4 border-[var(--night)] hover:border-white rounded-lg cursor-pointer transition-all duration-200" (click)="difficulty = 'easy'" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
-                Fácil
-                <span class="relative inline-flex items-center justify-center ml-3 one-time-animation" [ngClass]="{ 'fa-shake': mouseEnter || difficulty === 'easy' }">
-                    <i class="fa-solid fa-sun sun-icon absolute text-[var(--bright-gold)] pointer-events-none"></i>
-                    <i class="fa-solid fa-face-laugh-beam relative z-10"></i>
-                </span>
-            </button>
-
-            <button [class.selected]="difficulty === 'hard'" class="difficulty-btn w-[130px] flex items-center justify-center bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-xs sm:text-xs md:text-sm lg:text-base font-medium py-3 px-4 mx-3 border-b-4 border-[var(--night)] hover:border-white rounded-lg cursor-pointer transition-all duration-200" (click)="difficulty = 'hard'" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
-                Difícil
-                <span class="relative inline-flex items-center justify-center ml-3 one-time-animation" [ngClass]="{ 'fa-shake': mouseEnter || difficulty === 'hard' }">
-                    <i class="fa-solid fa-fire fire-icon absolute text-[var(--electric-orange)] pointer-events-none"></i>
-                    <i class="fa-solid fa-skull relative z-10"></i>
-                </span>
-            </button>
-        </div>       
+        <footer class="fixed bottom-4 left-1/2 -translate-x-1/2 flex items-center justify-between">
+            <div class="flex items-center gap-4 text-[var(--dark-silver)]">
+                <span class="text-xs tracking-wide">¿Buscas otro desafío?</span>
+                <a href="https://quizgame-612a1.web.app/main-menu" target="_blank" class="relative text-xs font-semibold text-shadow-3d hover:text-gray-200 cursor-pointer transition-all duration-200">Quiz de cultura general 🧠</a>
+            </div>        
+        </footer>
     }
-
-    @if(difficulty === 'easy') {
-        <h5 class="text-lg sm:text-lg lg:text-2xl font-medium text-center tracking-wider text-shadow-3d mb-4 pb-2 border-b-2 border-dashed">Configura la partida</h5>
-        
-        <form class="w-full">  
-            <div class="mb-3">
-                <label for="search" class="block text-sm sm:text-sm lg:text-base xl:text-lg mb-1 text-left">Ingresa tu búsqueda</label>
-                <input type="search" id="search" class="w-full h-[45px] text-sm lg:text-base text-[var(--night)] capitalize placeholder:normal-case appearance-none bg-white border border-b-4 border-[var(--night)] rounded py-2 px-3 leading-normal focus:outline-none focus:shadow-outline" placeholder="Artista o canción" required [(ngModel)]="search" [ngModelOptions]="{ standalone: true }">
-            </div>            
-
-            <app-quantity-form [quantity]="quantity"></app-quantity-form>
-
-            <div class="flex items-center justify-between mt-6">
-                <div class="flex items-center gap-2">
-                    <span class="text-xs sm:text-xs lg:text-sm tracking-wide text-gray-300">Dificultad seleccionada:</span>
-                    <span class="text-xs sm:text-xs lg:text-sm font-semibold tracking-wide">{{ difficulty === 'easy' ? 'Fácil' : 'Difícil' }}</span>
-                </div>
-                <button type="button" class="relative text-xs sm:text-xs lg:text-sm font-semibold text-shadow-3d hover:text-gray-200 cursor-pointer transition-all duration-200" (click)="openModal()">Cambiar &#xf363;</button>
-            </div>
-
-             <button class="w-full flex items-center justify-center bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-xs sm:text-xs md:text-sm lg:text-base font-medium py-3 px-4 mt-4 border-b-4 border-[var(--night)] hover:border-white disabled:bg-[var(--dolphin-navy)] hover:disabled:bg-[var(--dolphin-navy)] hover:disabled:border-[var(--night)] disabled:text-[var(--dark-silver)] disabled:cursor-not-allowed rounded-lg cursor-pointer transition-all duration-200" [disabled]="!search" (click)="sendParams()">
-                Iniciar partida
-            </button>            
-        </form>
-
-    }
-  
-    @if (difficulty === 'hard') {
-        @if(genres$ | async; as genres) { 
-            <h5 class="text-lg sm:text-lg lg:text-2xl font-medium text-center tracking-wider text-shadow-3d mb-4 pb-2 border-b-2 border-dashed">Configura la partida</h5>
-
-            <form class="w-full"> 
-                <div class="mb-3">
-                    <label for="select" class="block text-sm sm:text-sm lg:text-base xl:text-lg mb-1 text-left">Elige una palabra clave</label> 
-                    <select id="select" class="w-full h-[45px] text-sm lg:text-base text-[var(--night)] bg-white border border-b-4 border-[var(--night)] rounded py-2 px-3 leading-normal hover:bg-gray-200 focus:outline-none focus:shadow-outline cursor-pointer" [(ngModel)]="genre" [ngModelOptions]="{ standalone: true }">
-                        @for (item of genres; track item.id) { 
-                            <option [value]="item.name.toLowerCase()">{{ item.name }}</option> 
-                        }
-                    </select>
-                </div>
-
-                <app-quantity-form [quantity]="quantity"></app-quantity-form>
-
-                <div class="flex items-center justify-between mt-6">
-                    <div class="flex items-center gap-2">
-                        <span class="text-xs sm:text-xs lg:text-sm tracking-wide text-gray-300">Dificultad seleccionada:</span>
-                        <span class="text-xs sm:text-xs lg:text-sm font-semibold tracking-wide">{{ difficulty === 'hard' ? 'Difícil' : 'Fácil' }}</span>
-                    </div>
-                    <button type="button" class="relative text-xs sm:text-xs lg:text-sm font-semibold text-shadow-3d hover:text-gray-200 cursor-pointer transition-all duration-200" (click)="openModal()">Cambiar &#xf363;</button>
-                </div>
-
-                <button class="w-full flex items-center justify-center bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-xs sm:text-xs md:text-sm lg:text-base font-medium py-3 px-4 mt-4 border-b-4 border-[var(--night)] hover:border-white disabled:bg-[var(--dolphin-navy)] hover:disabled:bg-[var(--dolphin-navy)] hover:disabled:border-[var(--night)] disabled:text-[var(--dark-silver)] disabled:cursor-not-allowed rounded-lg cursor-pointer transition-all duration-200" [disabled]="!genre" (click)="sendParams()">
-                    Iniciar partida
-                </button>        
-            </form>
-        } @else {
-            <app-loader text="Cargando opciones..."></app-loader>
-        }     
-    }
-<!-- 
-    <div class="flex items-center flex-row">
-        <span class="text-[10px] text-left tracking-wide text-gray-300 whitespace-nowrap">Pon a prueba tus conocimientos generales</span>
-    </div> -->
-
-  <!--! AQUÍ IRÍA UN ENLACE AL OTRO QUIZ, EJEMPLO: -->
-  <!--
-    [ Desafío Quiz ]
-Pon a prueba tus conocimientos generales.
-  -->
-
-  <!--! APARENTEMENTE YA QUEDÓ HASTA LA PARTE DONDE INICIA EL JUEGO, FALTA INTEGRAR <app-loader> AL INICIAR LA PARTIDA -->
-  
 </div>
-

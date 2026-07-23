@@ -4,7 +4,8 @@
 
 * { 
     // font-family: "Roboto", sans-serif, FontAwesome; 
-    font-family: "Cascadia Mono", sans-serif, FontAwesome; 
+    font-family: "Cascadia Mono", sans-serif, 
+    "Segoe UI", "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", FontAwesome; 
 }
 
 html, body { height: 100%; }
@@ -32,6 +33,7 @@ body { margin: 0; }
 }
 
 .text-shadow-3d { text-shadow: 2px 4px 0 rgba(26, 28, 26, 1) }
+.outline-text-shadow { text-shadow: -1px -1px 0 var(--night), 1px -1px 0 var(--night), -1px  1px 0 var(--night), 1px  1px 0 var(--night); }
 .shadow-3d { box-shadow: 0 4px 6px rgba(0, 0, 0, 1) }
 .drop-3d { filter: drop-shadow(2px 4px 0 rgb(26, 28, 26)) }
 .one-time-animation { animation-iteration-count: 1; }

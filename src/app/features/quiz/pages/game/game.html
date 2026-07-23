@@ -1,51 +1,39 @@
-<!--! DESCOMENTAR AL TERMINAR PRUEBAS, YA FUNCIONA -->
-<!-- @if (isLoadingGame) {
+@if (isLoadingGame) {
    <app-loader text="Preparando la partida..."></app-loader>
-}@else { -->
-    <div class="w-full max-w-3xl p-4 bg-[var(--pacific-cyan)] text-white border border-[var(--night)] rounded-lg shadow-3d cursor-default text-center">
+} @else {
+    <div class="w-full max-w-3xl relative p-4 bg-[var(--pacific-cyan)] text-white border border-[var(--night)] rounded-lg shadow-3d cursor-default text-center">
         
         <app-track-preview [preview]="currentTrack.preview" [albumCover]="currentTrack.album.cover_medium"></app-track-preview>
 
         <app-track-lyrics [artist]="currentTrack.artist.name" [track]="currentTrack.title" [index]="currentTrackIndex" (lyricsLoaded)="onLyricsLoaded($event)"></app-track-lyrics>
 
-        <p class="w-full text-base sm:text-base lg:text-xl font-normal tracking-wide py-2 mt-2">¿Qué canción es?</p>
-        <div class="grid grid-cols-2 gap-4 justify-center"> 
+        <p class="w-full text-base sm:text-base lg:text-lg font-bold tracking-wide pb-4 mt-4 text-shadow-3d">¿Qué canción es?</p>
+        <div class="grid grid-cols-2 gap-4 justify-center">              
             @for (answer of answerOptions; track answer.id) { 
-                <button 
-                    [ngClass]="answer.title === currentTrack.title ? 'disabled:border-[var(--sea-green)]' : 'disabled:border-[var(--light-carmine-pink)]'"
-                    (click)="onAnswerSelected(answer.title)" [disabled]="alreadyAnswered(currentTrackIndex)" 
-                    class="min-h-18 max-h-auto text-sm font-black text-black bg-white hover:bg-gray-200 shadow-md py-2 px-4 border-b-4 border-[var(--night)] hover:border-[var(--rich-cerulean)] rounded cursor-pointer disabled:bg-[#F5F5F5] hover:disabled:bg-[#F5F5F5] disabled:text-gray-400 disabled:cursor-not-allowed disabled:shadow-xl transition-all duration-100 ease-linear" >
+                <button class="min-h-18 flex items-center justify-center text-xs sm:text-xs lg:text-sm font-medium text-[var(--night)] bg-white hover:bg-[var(--dark-silver)] shadow-lg py-2 px-4 border-b-4 border-[var(--night)] hover:border-white rounded-lg cursor-pointer disabled:bg-white hover:disabled:bg-white disabled:text-[var(--night)] disabled:cursor-not-allowed disabled:opacity-90 transition-all duration-200" [ngClass]="answer.id === currentTrack.id ? 'disabled:border-[var(--sea-green)]' : 'disabled:border-[var(--light-carmine-pink)]'" (click)="onAnswerSelected(answer.title)" [disabled]="alreadyAnswered(currentTrackIndex)">
                     {{ answer.title }}
                 </button>
             }
         </div>
  
-        <div class="flex justify-center flex-wrap py-4">
-        
-            <p class="w-full mb-4 text-sm text-gray-300 tracking-widest gap-4" [ngClass]="alreadyAnswered(currentTrackIndex) ? 'visible' : 'invisible'">Respondida &#xf058;</p>
+        <div class="flex justify-center flex-wrap pt-4 gap-x-8 gap-y-2">        
+            <span class="w-full mb-2 text-xs text-gray-300 font-medium tracking-widest" [ngClass]="alreadyAnswered(currentTrackIndex) ? 'visible' : 'invisible'">Respondida &#xf058;</span>
 
-            <button (click)="prevQuestion()" [disabled]="currentTrackIndex == 0" 
-            [ngClass]="alreadyAnswered(currentTrackIndex) && currentTrackIndex === gameTracks.length - 1 ? '!bg-[var(--night)] text-white hover:!bg-white hover:!text-black !border-white hover:!border-[var(--night)]' : ''" 
-            class="flex items-center bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-xs sm:text-xs md:text-sm lg:text-base font-medium py-3 px-4 mx-3 border-b-4 
-            
-            border-[var(--night)] hover:border-white disabled:bg-[var(--dolphin-navy)] hover:disabled:bg-[var(--dolphin-navy)] hover:disabled:border-[var(--night)] disabled:text-[var(--dark-silver)] disabled:cursor-not-allowed rounded-lg cursor-pointer transition-all duration-200 ease-in-out"
-                
-                (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
-                <i class="fa-solid fa-caret-left one-time-animation mr-3 disabled:text-gray-500" [ngClass]="mouseEnter && currentTrackIndex > 0 ? 'fa-shake' : ''"></i>Anterior
-            </button>
-    
-            <button (click)="nextQuestion()" [disabled]="currentTrackIndex === gameTracks.length - 1" 
-            [ngClass]="alreadyAnswered(currentTrackIndex) && currentTrackIndex !== gameTracks.length - 1 ? '!bg-[var(--night)] text-white hover:!bg-white hover:!text-black !border-white hover:!border-[var(--night)]' : ''" 
-            class="flex items-center bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-xs sm:text-xs md:text-sm lg:text-base font-medium py-3 px-4 mx-3 border-b-4 
-            
-            border-[var(--night)] hover:border-white disabled:bg-[var(--dolphin-navy)] hover:disabled:bg-[var(--dolphin-navy)] hover:disabled:border-[var(--night)] disabled:text-[var(--dark-silver)] disabled:cursor-not-allowed rounded-lg cursor-pointer transition-all duration-200 ease-in-out"
-                
-                (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
-                Siguiente <i class="fa-solid fa-caret-right one-time-animation ml-3 disabled:text-gray-500" [ngClass]="mouseEnter && currentTrackIndex >= 0 ? 'fa-shake' : ''"></i>
+            <button (click)="prevQuestion()" [disabled]="currentTrackIndex == 0" [ngClass]="alreadyAnswered(currentTrackIndex) && currentTrackIndex === gameTracks.length - 1 ? '!bg-white text-[var(--night)] hover:!bg-[var(--dark-silver)] !border-[var(--night)] hover:!border-white' : ''" 
+                class="flex items-center bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-xs sm:text-xs md:text-sm lg:text-base font-medium py-3 px-4 border-b-4 border-[var(--night)] hover:border-white disabled:bg-[var(--dolphin-navy)] hover:disabled:bg-[var(--dolphin-navy)] hover:disabled:border-[var(--night)] disabled:text-[var(--dark-silver)] disabled:cursor-not-allowed rounded-lg cursor-pointer transition-all duration-200" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
+                    <i class="fa-solid fa-angle-left one-time-animation mr-3 disabled:text-gray-500" [ngClass]="mouseEnter && currentTrackIndex > 0 ? 'fa-shake' : ''"></i>Anterior
+            </button>    
+
+            <button (click)="nextQuestion()" [disabled]="currentTrackIndex === gameTracks.length - 1" [ngClass]="alreadyAnswered(currentTrackIndex) && currentTrackIndex !== gameTracks.length - 1 ? '!bg-white text-[var(--night)] hover:!bg-[var(--dark-silver)] !border-[var(--night)] hover:!border-white' : ''" 
+                class="flex items-center bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-xs sm:text-xs md:text-sm lg:text-base font-medium py-3 px-4 border-b-4 border-[var(--night)] hover:border-white disabled:bg-[var(--dolphin-navy)] hover:disabled:bg-[var(--dolphin-navy)] hover:disabled:border-[var(--night)] disabled:text-[var(--dark-silver)] disabled:cursor-not-allowed rounded-lg cursor-pointer transition-all duration-200" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
+                    Siguiente <i class="fa-solid fa-angle-right one-time-animation ml-3 disabled:text-gray-500" [ngClass]="mouseEnter && currentTrackIndex >= 0 ? 'fa-shake' : ''"></i>
             </button>   
         </div>
 
-        <p class="w-full text-[10px] mt-2">Canción {{ currentTrackIndex + 1 }} de {{ gameTracks.length }}</p>
+        <p class="absolute bottom-1 right-1 text-xs text-gray-300 p-2">Canción <span class="text-white font-bold">{{ currentTrackIndex + 1 }}</span> de <span class="text-white font-bold">{{ gameTracks.length }}</span></p>
 
+        <button class="absolute bottom-1 left-1 p-2 text-xs text-shadow-3d cursor-pointer opacity-80 hover:opacity-100 transition-all duration-200" (click)="openModal()">
+            <i class="fa-solid fa-right-from-bracket mr-2"></i>Salir
+        </button>  
     </div>
-<!-- } -->
+}

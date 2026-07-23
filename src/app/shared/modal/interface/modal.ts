@@ -4,6 +4,7 @@ export interface ModalInterface {
     type?: 'info' | 'warning' | 'error' | 'success' | 'confirm'
     confirmText?: string,
     cancelText?: string,
+    autoCloseMs?: number,
     onConfirm: () => void,
     onCancel?: () => void,
 }

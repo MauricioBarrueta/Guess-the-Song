@@ -23,6 +23,11 @@ export class GameService {
     return this.http.get<Search>(`${this.api}/search?q=${param}&limit=150`)
   }  
 
+  /* Limpia el título de la canción, eliminando cualquier texto dentro de () - [] y espacios sobrantes */
+  cleanTrackTitle(title: string): string {
+    return title.replace(/\s*\([^)]*\)/g, '').replace(/\s*\[[^\]]*]/g, '').trim()
+  }
+
   /* Se obtiene la letra de la canción y se almacena en caché para evitar solicitudes repetidas */
   getTrackLyrics(artist?: string, track?: string): Observable<Lyrics | null> {
     const key = `${artist?.toLowerCase().trim()}-${track?.toLowerCase().trim()}` /* Clave única por canción */

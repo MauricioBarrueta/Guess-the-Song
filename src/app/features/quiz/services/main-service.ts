@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root',
 })
-export class GenreService {
+export class MainService {
   private readonly api = '/deezer';
 
   constructor( private http: HttpClient, private router: Router) {}  
@@ -18,7 +18,7 @@ export class GenreService {
   }
 
   /* Se guarda el valor como parámetro, dependiendo la dificultad que se haya seleccionado */
-  sendParamToGame(param: string, difficulty: 'easy' | 'hard', quantity: number) {
+  saveGameConfig(param: string, difficulty: 'easy' | 'hard', quantity: number) {
     /* Se limpian las claves antes de asignar un nuevo valor */
     localStorage.removeItem('search')
     localStorage.removeItem('genre')
