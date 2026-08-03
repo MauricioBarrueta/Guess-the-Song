@@ -4,7 +4,8 @@ import { ScoreResults } from '../interfaces/score';
 @Injectable({
   providedIn: 'root',
 })
-export class GlobalScoreService {
+
+export class ScoreService {
 
   gameScore: ScoreResults[] = []
 
@@ -18,7 +19,7 @@ export class GlobalScoreService {
     return this.gameScore
   }
 
-  /* Se resetea el arreglo */
+  /* Restablece la puntuación */
   clearScoreData() {
     this.gameScore = []
   }

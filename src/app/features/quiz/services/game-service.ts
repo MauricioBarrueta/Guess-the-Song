@@ -20,7 +20,7 @@ export class GameService {
 
   /* Obtiene la lista de resultados que coincidan con el valor del parámetro */
   searchByParam(param: string): Observable<Search> {
-    return this.http.get<Search>(`${this.api}/search?q=${param}&limit=150`)
+    return this.http.get<Search>(`${this.api}/search?q=${param}&limit=200`)
   }  
 
   /* Limpia el título de la canción, eliminando cualquier texto dentro de () - [] y espacios sobrantes */
@@ -49,33 +49,40 @@ export class GameService {
       );
   }
 
-  /* Precarga la letra de la canción */
+  /* Precarga la letra de la siguiente canción en segundo plano */
   preloadTrackLyrics(track: SearchItem): Observable<Lyrics | null> {
     const artist = encodeURIComponent(track.artist.name)
-    const title = encodeURIComponent(track.title.replace(/\(.*?\)/g, '').trim()) /* Elimina el contenido entre paréntesis, (Live), (Acoustic), etc */
+    const title = encodeURIComponent(this.cleanTrackTitle(track.title))     
 
     return this.getTrackLyrics(artist, title)
   }
 
-  /* Borra el caché */
+  /* Gestionan el estado de las letras durante la partida (caché y pistas utilizadas) */
   clearLyricsCache(): void {
     this.lyricsCache.clear()
   }
 
-  /* Marca la letra de una pregunta como ya visualizada */
   markLyricsAsViewed(index: number): void {
-    this.viewedLyrics.add(index);
+    this.viewedLyrics.add(index)
   }
 
-  /* Indica si la letra de una pregunta ya fue visualizada */
   hasViewedLyrics(index: number): boolean {
-    return this.viewedLyrics.has(index);
+    return this.viewedLyrics.has(index)
   }
 
-  /* Reinicia el registro de letras visualizadas */
   clearViewedLyrics(): void {
-    this.viewedLyrics.clear();
+    this.viewedLyrics.clear()
   }  
+
+  /* Restablece el estado de la partida */
+  exitAndResetGame(): void {
+    this.clearLyricsCache()
+    this.clearViewedLyrics()
+
+    localStorage.removeItem('search')
+    localStorage.removeItem('genre')
+    localStorage.removeItem('quantity')
+  }
 
   /* Algoritmo Fisher-Yates, usado para mezclar un array de manera uniforme */
   shuffle<T>(array: T[]): T[] {

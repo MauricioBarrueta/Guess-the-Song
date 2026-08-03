@@ -2,19 +2,20 @@
 
     <app-album-cover [albumCover]="albumCover"></app-album-cover>
     
-    <p class="w-full text-base sm:text-base lg:text-lg text-center text-shadow-3d font-bold py-2 mt-1"
+    <p class="w-full text-base md:text-lg text-center text-shadow-3d font-bold py-2 mt-1"
         [textContent]="instrText ? 'Escucha el fragmento y adivina el título' : 'Vuelve a escuchar el fragmento'"></p>
 
     <div class="w-full flex justify-center items-center flex-nowrap mt-1">
         <audio #audioPlayer [src]="preview" (ended)="onPreviewEnded()"></audio>
-        <button class="w-[130px] flex items-center justify-center gap-2 bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-xs md:text-sm font-medium py-3 px-4 border-b-4 border-[var(--night)] hover:border-white rounded-l-lg cursor-pointer transition-all duration-200 disabled:bg-[var(--dolphin-navy)] hover:disabled:bg-[var(--dolphin-navy)] hover:disabled:border-[var(--night)] disabled:text-[var(--dark-silver)] disabled:cursor-not-allowed"
-            (click)="togglePlay()" [disabled]="!hasPreview" [title]="hasPreview ? 'Reproducir' : 'No disponible'">
-                <span class="w-4 flex justify-center mr-2" [innerHTML]="isPlaying ? '&#xf04c;' : '&#xf04b;'"></span>{{isPlaying ? 'Pausar' : 'Escuchar'}} 
+        <button class="w-auto md:w-[130px] h-12 flex items-center justify-center gap-3 bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-xs md:text-sm font-medium py-3 px-4 border-b-4 border-[var(--night)] hover:border-white rounded-l-lg cursor-pointer transition-all duration-200 disabled:bg-[var(--dolphin-navy)] hover:disabled:bg-[var(--dolphin-navy)] hover:disabled:border-[var(--night)] disabled:text-[var(--dark-silver)] disabled:cursor-not-allowed"
+            (click)="togglePlay()" [disabled]="!hasPreview" [title]="hasPreview ? 'Reproducir' : 'No disponible'" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
+                <i class="fa-solid one-time-animation text-xs" [ngClass]="{ 'fa-pause': isPlaying, 'fa-play': !isPlaying, 'fa-shake': mouseEnter }"></i>               
+                {{isPlaying ? 'Pausar' : 'Escuchar'}} 
         </button>
 
-        <div class="flex items-center justify-center h-[48px] bg-white border-b-4 border-[var(--night)] rounded-r-lg py-2 px-3 focus:outline-none focus:shadow-outline" title="Preview">
+        <div class="flex items-center justify-center gap-px h-12 bg-white border-b-4 border-[var(--night)] rounded-r-lg px-3">
             @for (_ of [1, 2, 3, 4, 5]; track $index) {
-                <img class="h-[18px] filter brightness-0" src="/spotify-code.svg" alt="" loading="eager">
+                <img class="h-[16px] md:h-[18px] filter brightness-0" [class.animate-spotify-wave]="isPlaying" [style.animation-delay.ms]="$index * 120" src="/spotify-code.svg" alt="" loading="eager">
             }
         </div>
     </div>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MainService } from '../../services/main-service';
-import {  map, Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { GenreItem } from '../../interfaces/genre';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -54,6 +54,7 @@ export class Main implements OnInit {
 
   openModal(): void {
     this.modalService.showModal({
+      icon: '<i class="fa-solid fa-circle-question"></i>',
       title: '¿Seguro que deseas cambiar la dificultad?',
       content: 'Se perderá la configuración actual de la partida',
       type: 'confirm',

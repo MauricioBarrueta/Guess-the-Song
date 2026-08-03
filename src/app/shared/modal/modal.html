@@ -3,23 +3,29 @@
         <div class="p-4 w-full max-w-xl">
             <div class="relative bg-[var(--pacific-cyan)] text-white border border-[var(--night)] rounded-lg shadow-3d">
                 <div class="p-4 text-center">  
-                    <span class="w-full text-base sm:text-base lg:text-lg font-bold tracking-wide pb-4 text-shadow-3d" [innerHTML]="modalData.title"></span> 
+                    <div class="w-full pb-4 md:pb-5">
+                        <i class="w-12 h-12 text-4xl md:text-5xl text-center text-gray-300" [innerHTML]="modalData.icon"></i>
+                    </div>
+
+                    <span class="md:text-xl font-bold tracking-wide pb-4 text-shadow-3d" [innerHTML]="modalData.title"></span> 
                     
-                    <div class="text-sm/7 lg:text-base/8 tracking-wider whitespace-pre-wrap" [ngClass]="modalData.type != 'confirm' ? 'text-left font-semibold mt-6 mb-4' : 'text-center text-gray-200 my-4'">{{ modalData.content }}</div>
+                    <div class="text-base/7 md:text-lg/8 tracking-wider whitespace-pre-wrap" [ngClass]="modalData.type != 'confirm' ? 'text-left font-semibold mt-6 mb-4' : 'text-center text-gray-200 my-4'">{{ modalData.content }}</div>
 
                     @if (modalData.type != 'confirm') {
                         <span class="text-xs text-center tracking-wide text-gray-300 whitespace-nowrap">
-                            Te quedan <span class="font-black" [ngClass]="{ 'text-white': countdown > 3, 'text-[var(--bright-gold)]': countdown <= 3 && countdown > 1, 'text-[var(--electric-orange)] animate-pulse': countdown === 1}">{{ countdown }}</span> segundos
+                            Te {{ isSingular ? 'queda' : 'quedan' }}
+                            <span class="font-black" [ngClass]="{ 'text-white': countdown > 3, 'text-[var(--bright-gold)]': countdown <= 3 && countdown > 1, 'text-[var(--electric-orange)] animate-pulse': countdown === 1 }">{{ countdown }}</span>
+                            {{ isSingular ? 'segundo' : 'segundos' }}
                         </span>
                     }
 
                     <div class="flex gap-4 pt-4" [ngClass]="modalData.type != 'confirm' ? 'justify-center' : 'justify-between'">
-                        <button type="button" (click)="confirm()" class="w-1/2 flex items-center justify-center bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-xs sm:text-xs md:text-sm lg:text-base font-medium py-3 px-4 border-b-4 border-[var(--night)] hover:border-white rounded-lg cursor-pointer transition-all duration-200">
+                        <button type="button" (click)="confirm()" class="w-1/2 flex items-center justify-center bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-sm md:text-base font-medium py-3 px-4 border-b-4 border-[var(--night)] hover:border-white rounded-lg cursor-pointer transition-all duration-200">
                             {{ modalData.confirmText }}
                         </button>
 
                         @if (modalData.type == 'confirm') {
-                            <button type="button" (click)="cancel()" class="w-1/2 flex items-center justify-center bg-[var(--dolphin-navy)] hover:bg-[var(--dusk-blue)] text-xs sm:text-xs md:text-sm lg:text-base font-medium py-3 px-4 border-b-4 border-[var(--night)] hover:border-white rounded-lg cursor-pointer transition-all duration-200">
+                            <button type="button" (click)="cancel()" class="w-1/2 flex items-center justify-center bg-[var(--dolphin-navy)] hover:bg-[var(--dusk-blue)] text-sm md:text-base font-medium py-3 px-4 border-b-4 border-[var(--night)] hover:border-white rounded-lg cursor-pointer transition-all duration-200">
                                 {{ modalData.cancelText }}
                             </button>
                         }                                           

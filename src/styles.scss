@@ -1,11 +1,8 @@
 @use "tailwindcss";
-// @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Cascadia+Mono:ital,wght@0,200..700;1,200..700&display=swap');
 
 * { 
-    // font-family: "Roboto", sans-serif, FontAwesome; 
-    font-family: "Cascadia Mono", sans-serif, 
-    "Segoe UI", "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", FontAwesome; 
+    font-family: "Cascadia Mono", sans-serif, "Segoe UI", "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", FontAwesome; 
 }
 
 html, body { height: 100%; }

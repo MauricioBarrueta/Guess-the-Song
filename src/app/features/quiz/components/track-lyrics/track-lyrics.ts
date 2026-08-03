@@ -57,9 +57,9 @@ export class TrackLyrics implements OnInit, OnChanges, OnDestroy {
 
     /* Codifica los parámetros para enviarlos de forma segura, además de borrar el contenido entre paréntesis */
     const artist = encodeURIComponent(this.artist)
-    const track = encodeURIComponent(this.track.replace(/\(.*?\)/g, '').trim())
-    
-    this.gameService.getTrackLyrics(artist, track)
+    const track = encodeURIComponent(this.gameService.cleanTrackTitle(this.track))
+
+    this.gameService.getTrackLyrics(artist, track)    
       .pipe(
         takeUntil(this.destroy$)
       )
@@ -89,9 +89,11 @@ export class TrackLyrics implements OnInit, OnChanges, OnDestroy {
             /* Cuenta únicamente las líneas con contenido y detiene el recorrido al alcanzar el límite */
             if (line.trim() !== '') { count++ }
 
-            if (count === 6) { break }
+            if (count === 5) { break }
           }
-          this.lyrics = result.join('\n') + '\n\n…'
+
+          /* Reconstruye la letra, elimina espacios iniciales y agrega un indicador de continuación */
+          this.lyrics = result.join('\n').replace(/^\s+/, '') + '\n\n…' 
           
           this.isLyricsAvailable = true
           queueMicrotask(() => { this.lyricsLoaded.emit(true) })
@@ -147,7 +149,3 @@ export class TrackLyrics implements OnInit, OnChanges, OnDestroy {
     });
   }
 }
-
-/**
- * ! AGREGAR UN TIMER CUANDO SE ABRE EL MODAL, DESPUÉS DE x SEGUNDOS SE CIERRA AUTOMÁTICAMENTE
- */

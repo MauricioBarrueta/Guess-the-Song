@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -6,7 +5,6 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-quantity-form',
   imports: [ FormsModule ],
   templateUrl: './quantity-form.html',
-  styleUrl: './quantity-form.scss',
 })
 export class QuantityForm {
 

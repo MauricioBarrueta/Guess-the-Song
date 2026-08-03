@@ -1,4 +1,5 @@
 export interface ModalInterface {
+    icon?: string,
     title: string,
     content: string,
     type?: 'info' | 'warning' | 'error' | 'success' | 'confirm'

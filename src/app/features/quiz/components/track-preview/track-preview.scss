@@ -1,0 +1,10 @@
+/* Playing Animation */
+@keyframes spotify-wave {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+.animate-spotify-wave {
+  animation: spotify-wave 1s ease-in-out infinite;
+  will-change: transform;
+}

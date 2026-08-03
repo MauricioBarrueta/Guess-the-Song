@@ -5,7 +5,8 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-track-preview',
   templateUrl: './track-preview.html',
-  imports: [ CommonModule, AlbumCover ]
+  imports: [ CommonModule, AlbumCover ],
+  styleUrl: './track-preview.scss'
 })
 export class TrackPreview implements OnChanges {
 
@@ -15,6 +16,8 @@ export class TrackPreview implements OnChanges {
   @Input({ required: true }) preview!: string
   @Input({ required: true }) albumCover!: string
   @Input() instrText = true /* Cambia el texto dependiendo en dónde sea llamado el componente */
+
+  mouseEnter: boolean = false
 
   ngOnChanges(changes: SimpleChanges): void {
     /* Evita que el preview anterior continúe reproduciéndose al cambiar de canción */

@@ -4,8 +4,8 @@ import { catchError, Subject, takeUntil, throwError } from 'rxjs';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { Search, SearchItem } from '../../interfaces/search';
-import { ScoreResults } from '../../../../core/interfaces/score';
-import { GlobalScoreService } from '../../../../core/services/global-score-service';
+import { ScoreResults } from '../../interfaces/score';
+import { ScoreService } from '../../services/score-service';
 import { TrackPreview } from "../../components/track-preview/track-preview";
 import { TrackLyrics } from "../../components/track-lyrics/track-lyrics";
 import { Loader } from '../../../../shared/loader/loader';
@@ -19,7 +19,7 @@ import { ModalService } from '../../../../shared/modal/service/modal-service';
 })
 export class Game implements OnInit, OnDestroy {
 
-  constructor(private gameService: GameService, private gScoreService: GlobalScoreService, private modalService: ModalService, private router: Router, @Inject(PLATFORM_ID) private platformId: Object, private cdr: ChangeDetectorRef) {}
+  constructor(public gameService: GameService, private scoreService: ScoreService, private modalService: ModalService, private router: Router, @Inject(PLATFORM_ID) private platformId: Object, private cdr: ChangeDetectorRef) {}
   
   /* Parámetros */
   query: string = ''
@@ -287,6 +287,7 @@ export class Game implements OnInit, OnDestroy {
   isLoadingGame: boolean = true /* Verifica cuando ya se almacenó la letra de la primer canción en el caché */
 
   score: ScoreResults[] = [] 
+  isGameFinished: boolean = false
 
   private destroy$ = new Subject<void>() /* Usado por el takeUntil para finalizar todas las suscripciones activas */ 
 
@@ -303,16 +304,16 @@ export class Game implements OnInit, OnDestroy {
       this.quantity = quantity 
       
       /* Si no existe ningún parámetro, regresa al inicio */
-      if (!query) { //! DESCOMENTAR
-        this.router.navigate(['/main'])
-        return
-      }
+      // if (!query) { //! DESCOMENTAR
+      //   this.router.navigate(['/main'])
+      //   return
+      // }
 
-      /* Se guarda la consulta utilizada para obtener las canciones */
-      this.query = query //! DESCOMENTAR
+      // /* Se guarda la consulta utilizada para obtener las canciones */
+      // this.query = query //! DESCOMENTAR
 
 
-      // this.query = 'The Warning' //* QUITAR ******************
+      this.query = 'The Warning' //* QUITAR ****************************************
       
       /* Limpia los datos temporales */
       localStorage.removeItem('search')
@@ -380,30 +381,30 @@ export class Game implements OnInit, OnDestroy {
       });
   }
 
-  /* Genera las opciones de respuesta para la pregunta actual, mezclando la canción correcta con 3 incorrectas */
+  /* Genera las opciones de respuesta para la pregunta actual, mezclando la canción correcta con 3 incorrectas */  
   generateAnswers() {
     if (!this.currentTrack || !this.validSearchItems?.length) return
 
     /* Filtra las canciones incorrectas, selecciona 3 aleatorias, conserva únicamente títulos únicos y las combina con la correcta */
-    const incorrectTracks = this.validSearchItems.filter((track) => track.id !== this.currentTrack.id)    
+    const incorrectTracks = this.validSearchItems.filter((track) => track.id !== this.currentTrack.id)
     const uniqueTracks = new Map<string, SearchItem>() /* Utiliza el título limpio como key para evitar respuestas duplicadas */
+    
+    /* Título limpio de la respuesta correcta */
+    const currentCleanTitle = this.gameService.cleanTrackTitle(this.currentTrack.title)
     for (const track of this.gameService.shuffle([...incorrectTracks])) {
       const cleanTitle = this.gameService.cleanTrackTitle(track.title)
       
-      /* Omite títulos duplicados */
-      if (!uniqueTracks.has(cleanTitle)) {
+      /* Omite versiones de la respuesta correcta y títulos duplicados */
+      if (cleanTitle !== currentCleanTitle && !uniqueTracks.has(cleanTitle)) {
         uniqueTracks.set(cleanTitle, track)
       }
-    }
-    const randomIncorrect = [...uniqueTracks.values()].slice(0, 3);
+    }    
+    const randomIncorrect = [...uniqueTracks.values()].slice(0, 3)
     const answers = [this.currentTrack, ...randomIncorrect]
 
-    /* Se mezclan ahora las 4 posibles respuestas y se asignan al arreglo */
-    this.answerOptions = this.gameService
-      .shuffle([...answers])
-      /* Crea una copia con los títulos ya modificados */
-      .map(track => ({ ...track, title: this.gameService.cleanTrackTitle(track.title) }));
-  }
+    /* Se mezclan ahora las 4 posibles respuestas y se asignan al arreglo */    
+    this.answerOptions = this.gameService.shuffle([...answers])
+  } 
 
   /* Se obtiene la respuesta correcta de cada canción de la partida */
   getCorrectAnswer(selected: string): boolean{
@@ -433,9 +434,10 @@ export class Game implements OnInit, OnDestroy {
     }   
 
     if(this.score.length === this.gameTracks.length) {
+      this.isGameFinished = true
 
       setTimeout(() => {
-        this.gScoreService.pushScoreData(this.score)
+        this.scoreService.pushScoreData(this.score)
         this.gameService.clearLyricsCache() /* Se borra el caché al terminar la partida */
         this.gameService.clearViewedLyrics() /* Limpia el registro de letras guardadas */
 
@@ -449,7 +451,7 @@ export class Game implements OnInit, OnDestroy {
     return this.score.some(question => question.index === index)
   }   
 
-  /* Controla la navegación entre preguntas, no sin antes verificar si no se encuentra en la primera o en la última */  
+  /* Controlan la navegación entre preguntas, verificando antes si es el primer o último índice */  
   nextQuestion() {
     if (this.currentTrackIndex >= this.gameTracks.length - 1) return
 
@@ -473,8 +475,23 @@ export class Game implements OnInit, OnDestroy {
     this.generateAnswers()
   }  
 
+  /* Determinan el estado visual de los botones 'Anterior' y 'Siguiente' */
+  get prevAnswered(): boolean {
+    return this.currentTrackIndex > 0 && this.alreadyAnswered(this.currentTrackIndex - 1)
+  }
+
+  get nextAnswered(): boolean {
+    return this.currentTrackIndex < this.gameTracks.length - 1 && this.alreadyAnswered(this.currentTrackIndex)
+  }
+
+  /* Barra de progreso, el porcentaje depende del número de canciones por partida */
+  get progressBar(): number {
+    return ((this.currentTrackIndex + 1) / this.gameTracks.length) * 100
+  }
+
   openModal(): void {
     this.modalService.showModal({
+      icon: '<i class="fa-solid fa-circle-question"></i>',
       title: '¿Estás seguro de que deseas salir de la partida?',
       content: 'Se perderá todo tu progreso actual',
       type: 'confirm',
@@ -486,13 +503,8 @@ export class Game implements OnInit, OnDestroy {
   }
 
   exitGame(): void {
-    this.gameService.clearLyricsCache();
-    this.gameService.clearViewedLyrics();
-
-    localStorage.removeItem('search');
-    localStorage.removeItem('genre');
-    localStorage.removeItem('quantity');
-
-    this.router.navigate(['main'], { replaceUrl: true });
-  }
+    this.gameService.exitAndResetGame()
+    this.isGameFinished = false
+    this.router.navigate(['main'], { replaceUrl: true })
+  }  
 }

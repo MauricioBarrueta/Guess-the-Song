@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { GlobalScoreService } from '../../../../core/services/global-score-service';
-import { ScoreResults } from '../../../../core/interfaces/score';
+import { ScoreService } from '../../services/score-service';
+import { ScoreResults } from '../../interfaces/score';
 import { CommonModule } from '@angular/common';
 import { TrackPreview } from "../../components/track-preview/track-preview";
 import { ModalService } from '../../../../shared/modal/service/modal-service';
@@ -12,22 +12,23 @@ import { Loader } from '../../../../shared/loader/loader';
   selector: 'app-score',
   imports: [CommonModule, TrackPreview, Loader],
   templateUrl: './score.html',
+  styleUrl: './score.scss'
 })
-export class Score implements OnInit {
 
-  isLoading: boolean = true
+export class Score implements OnInit {
 
   score: ScoreResults[] = []
 
   showingDetails: boolean = false
   activeSlide: number = 0
 
+  isLoading: boolean = true
   mouseEnter: boolean = false
 
-  constructor(private gScoreService: GlobalScoreService, private router: Router, private gGameService: GameService, private modalService: ModalService, private cdr: ChangeDetectorRef) {}
+  constructor(private scoreService: ScoreService, private router: Router, private gameService: GameService, private modalService: ModalService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {   
-    const scoreData = this.gScoreService.getScoreData()
+    const scoreData = this.scoreService.getScoreData()
     /* Para evitar que se acceda a la ruta sin antes haber jugado una partida */
     // if (scoreData.length === 0) { //! DESCOMENTAR
     //   this.router.navigate(['main'])
@@ -35,8 +36,10 @@ export class Score implements OnInit {
     // }
 
     setTimeout(() => {
-      // this.score = scoreData
-      this.score = [
+      // this.score = scoreData //! DESCOMENRAR
+
+
+      this.score = [ //TODO QUITAR ESTA
   {
     "index": 0,
     "album": "https://cdn-images.dzcdn.net/images/cover/50ce1924b81171a9d17cf6a17f03846d/250x250-000000-80-0-0.jpg",
@@ -77,7 +80,9 @@ export class Score implements OnInit {
     "correctTrack": "MARTIRIO",
     "result": false
   }
-]
+      ]
+
+      
       this.isLoading = false
       
       /* Fuerza la detección de cambios para actualizar la vista tras el setTimeout */
@@ -102,17 +107,16 @@ export class Score implements OnInit {
     this.activeSlide > 0 ? this.activeSlide-- : this.activeSlide = this.score.length - 1  
   }  
 
-  /* Limpia cualquiér rastro de la partida antes de volver al menú */
-  exitGameAndReset() {
-    this.gScoreService.clearScoreData()
-    this.gGameService.clearLyricsCache()
-    this.gGameService.clearViewedLyrics()
-
+  /* Limpia cualquier rastro de la partida antes de volver al menú */
+  exitGameAndReset() {   
+    this.gameService.exitAndResetGame()
+    this.scoreService.clearScoreData()
     this.router.navigate(['main'], { replaceUrl: true })
   }
 
   openModal(): void {
     this.modalService.showModal({
+      icon: '<i class="fa-solid fa-circle-question"></i>',
       title: '¿Volver al menú principal?',
       content: 'Podrás configurar una nueva partida',
       type: 'confirm',

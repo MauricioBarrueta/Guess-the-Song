@@ -22,6 +22,7 @@ export class Modal implements OnInit, OnDestroy {
   
   /* Se inicializa la interface para evitar errores por 'undefined' */
   modalData: ModalInterface = {
+    icon: '',
     title: '',
     content: '',
     onConfirm: () => {},
@@ -77,6 +78,11 @@ export class Modal implements OnInit, OnDestroy {
       clearTimeout(this.autoCloseTimeout)
       this.autoCloseTimeout = undefined
     }
+  }
+
+  /* Le indica al contador si debe mostrarse en singular o no */
+  get isSingular(): boolean {
+    return this.countdown === 1
   }
 
   /* Cierra el modal y restablece los temporizadores */
