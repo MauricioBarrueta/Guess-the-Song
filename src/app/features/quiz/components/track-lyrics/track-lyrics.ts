@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { GameService } from '../../services/game-service';
 import { Subject, takeUntil } from 'rxjs';
-import { ModalService } from '../../../../shared/modal/service/modal-service';
 import { CommonModule } from '@angular/common';
+import { ModalHandlerService } from '../../../../shared/modal/service/modal-handler-service';
 
 @Component({
   selector: 'app-track-lyrics',
@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 })
 export class TrackLyrics implements OnInit, OnChanges, OnDestroy {
 
-  constructor(public gameService: GameService, private modalService: ModalService) {}
+  constructor(public gameService: GameService, private modalHandler: ModalHandlerService) {}
 
   lyrics: string | null = null
 
@@ -139,13 +139,6 @@ export class TrackLyrics implements OnInit, OnChanges, OnDestroy {
     /* Marca la pista como utilizada */
     this.gameService.markLyricsAsViewed(this.index)
 
-    this.modalService.showModal({
-      title: 'Pista',
-      content: this.lyrics,
-      type: 'info',
-      confirmText: 'Continuar',
-      autoCloseMs: 10000,
-      onConfirm: () => {},
-    });
+    this.modalHandler.infoModal('Pista', this.lyrics)
   }
 }

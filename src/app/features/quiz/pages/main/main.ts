@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { MainService } from '../../services/main-service';
-import { map, Observable } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 import { GenreItem } from '../../interfaces/genre';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { QuantityForm } from '../../components/quantity-form/quantity-form';
-import { ModalService } from '../../../../shared/modal/service/modal-service';
 import { Loader } from '../../../../shared/loader/loader';
+import { ModalHandlerService } from '../../../../shared/modal/service/modal-handler-service';
 
 @Component({
   selector: 'app-main',
@@ -14,54 +14,71 @@ import { Loader } from '../../../../shared/loader/loader';
   templateUrl: './main.html',
   styleUrl: './main.scss',
 })
-export class Main implements OnInit {
+export class Main {
   
-  constructor(private mainService: MainService, private modalService: ModalService) {}
+  constructor(private mainService: MainService, private modalHandler: ModalHandlerService, private cdr: ChangeDetectorRef) {}
 
   difficulty: 'easy' | 'hard' | null = null
   search!: string;
   genres$!: Observable<GenreItem[]>
   genre: string | null = null
-  quantity: number = 5
+  quantity: number = 10
 
   mouseEnter: boolean = false
 
-  ngOnInit(): void {
-    this.getAllGenres()
+  selectDifficulty(difficulty: 'easy' | 'hard'): void {
+    this.difficulty = difficulty
+
+    if (difficulty === 'hard') {
+      /* Notifica que comenzó la carga de la lista de géneros */
+      this.mainService.notifyListLoading()
+      
+      this.getAllGenres()
+    }
   }
   
-  /* Se obtiene la lista de todos los géneros */  
+  /* Se obtiene la lista de todos los géneros */    
   getAllGenres() {
     this.genres$ = this.mainService.getAllGenres()
       .pipe(
         map((res) => {
-          /* Obtiene todos los géneros a excepción del id '0'('All'), toma el nuevo primer elemento, regresa '' si devuelve null o undefined */
+          /* Obtiene todos los géneros a excepción del id '0' ('All') */
           const genres = res.data.filter((g) => g.id !== 0)
           this.genre = genres[0]?.name.toLowerCase() ?? ''
+
+          /* Notifica que la lista terminó de cargar y el Loader dejó de mostrarse */
+          this.mainService.notifyListLoaded()
+
           return genres
+        }),
+        catchError((error) => {
+          this.modalHandler.resultModal(
+            'fa-solid fa-circle-xmark',
+            'Error al obtener las opciones', 'No fue posible obtener los géneros. Inténtalo de nuevo',
+            'error', () => { this.difficulty = null }
+          )
+          console.error('ERROR:', error)
+
+          /* Devuelve un arreglo vacío para finalizar el flujo después del error */
+          return of([])
         })
-      );
+      )
   }
 
   /* Inicia la partida con la configuración ingresada */
   startGame(): void {
-    const value = this.difficulty === 'easy' ? this.search?.trim() : this.genre
+    const param = this.difficulty === 'easy' ? this.search?.trim() : this.genre
 
-    if (!value || !this.difficulty) return
+    if (!param || !this.difficulty) return
 
-    this.mainService.saveGameConfig(value, this.difficulty, this.quantity)
+    this.mainService.saveGameConfig(param, this.difficulty, this.quantity)
   }
 
-  openModal(): void {
-    this.modalService.showModal({
-      icon: '<i class="fa-solid fa-circle-question"></i>',
-      title: '¿Seguro que deseas cambiar la dificultad?',
-      content: 'Se perderá la configuración actual de la partida',
-      type: 'confirm',
-      confirmText: 'Confirmar',
-      cancelText: 'Cancelar',
-      onConfirm: () => this.difficulty = null,
-      onCancel: () => {}
-    });
-  }
+  showModal(): void {
+    this.modalHandler.confirmModal(
+      'fa-solid fa-circle-question', 
+      '¿Seguro que deseas cambiar la dificultad?', 'Se perderá la configuración actual de la partida', 
+      () => { this.difficulty = null; this.quantity = 10 }
+    )     
+  }  
 }

@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { catchError, Observable, of, tap } from 'rxjs';
+import { catchError, forkJoin, map, Observable, of, Subject, switchMap, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Search, SearchItem } from '../interfaces/search';
 import { environment } from '../../../../environments/environment.development';
 import { Lyrics } from '../interfaces/lyrics';
-
+import { Artist } from '../interfaces/artist';
+ 
 @Injectable({
   providedIn: 'root',
 })
@@ -16,12 +17,105 @@ export class GameService {
   
   private viewedLyrics = new Set<number>() /* Registra las preguntas cuya letra ya fue visualizada 1 vez */
 
+  /* Observables que notifican la carga y salida de Quiz */
+  private quizLoadedSubject = new Subject<void>()
+  quizLoaded$ = this.quizLoadedSubject.asObservable()
+
+  private exitedQuizSubject = new Subject<void>()
+  exitedQuiz$ = this.exitedQuizSubject.asObservable()
+
   constructor(private http: HttpClient) {}
 
-  /* Obtiene la lista de resultados que coincidan con el valor del parámetro */
-  searchByParam(param: string): Observable<Search> {
-    return this.http.get<Search>(`${this.api}/search?q=${param}&limit=200`)
+  /* Notifica que Quiz terminó de cargar los resultados */  
+  notifyQuizLoaded(): void {
+    this.quizLoadedSubject.next()
+  }
+
+  /* Notifica que se va a salir de Quiz */
+  notifyQuizExited(): void {
+    this.exitedQuizSubject.next()
+  }
+
+  /* Obtiene las canciones de un artista */  
+  getTracksByArtist(param: string): Observable<Search | null> {
+    const formattedParam = this.formatArtistParam(param) 
+
+    return this.http.get<Artist>(`${this.api}/artist/${formattedParam}`)
+      .pipe(
+        switchMap((res) => {
+          const artistId = res.id
+
+          /* Devuelve null cuando no se encuentra el ID del artista */
+          if (!artistId) {
+              return of(null)
+          }
+
+          return this.http.get<Search>(`${this.api}/artist/${artistId}/top`)
+            .pipe(
+              switchMap((data) => {
+                const total = data.total
+
+                /* Obtiene todas las canciones disponibles del artista usando el total de resultados */
+                return this.http.get<Search>(`${this.api}/artist/${artistId}/top?limit=${total}`)
+              })
+            )
+        })
+      )
   }  
+
+  /* Obtiene canciones del género seleccionado y prepara una selección aleatoria de artistas para la partida */
+  getTracksByGenre(genre: string): Observable<Search | null> {
+    return this.http.get<Search>(`${this.api}/search?q=${genre}&limit=250`)
+      .pipe(
+        switchMap((res) => {
+          
+          /* Obtiene IDs de los artistas, elimina duplicados y los convierte nuevamente en arreglo con ... */
+          const artistIds = [
+            ...new Set(
+              res.data
+                .map((track) => track.artist?.id)
+                .filter((id): id is number => !!id))]
+
+          /* Devuelve un resultado vacío si no se encontraron artistas */
+          if (!artistIds.length) {
+            return of(null)
+          }
+
+          /* Mezcla los artistas y limita la selección a 25 */
+          const shuffledArtists = this.shuffle([...artistIds])
+          const selectedArtists = shuffledArtists.slice(0, 25) 
+
+          /* Obtiene las canciones de todos los artistas seleccionados en paralelo */
+          return forkJoin(selectedArtists.map((artistId) => this.getTracksByArtistId(artistId)))
+            .pipe(
+              map((results) => {
+                /* Combina las canciones obtenidas en un solo arreglo y devuelve las canciones obtenidas junto con el total */
+                const tracks = results.flatMap((res) => res.data)
+                
+                return { data: tracks, total: tracks.length }
+              })
+            )
+        })
+      )
+  }
+
+  /* Obtiene todas las canciones populares de un artista */
+  getTracksByArtistId(artistId: number): Observable<Search> {
+    return this.http.get<Search>(`${this.api}/artist/${artistId}/top`)
+      .pipe(
+        switchMap((res) => {
+          const total = res.total
+
+          /* Obtiene todas las canciones disponibles del artista usando el total de resultados */
+          return this.http.get<Search>(`${this.api}/artist/${artistId}/top?limit=${total}`)
+        })
+      )
+  }
+
+  /* Toma el parámetro, elimina los espacios al inicio y final, y reemplaza los espacios internos y '/' por '-' */
+  private formatArtistParam(param: string): string {    
+    return param.trim().replace(/\s+/g, '-').replace(/\//g, '-')
+  }
 
   /* Limpia el título de la canción, eliminando cualquier texto dentro de () - [] y espacios sobrantes */
   cleanTrackTitle(title: string): string {
@@ -42,11 +136,11 @@ export class GameService {
           this.lyricsCache.set(key, lyrics)
         }),
         catchError(() => {
-          /* Si no existe la letra, guarda null para no volver a consultarla */
+          /* Si no se encuentra la letra, guarda null para evitar otra consulta */
           this.lyricsCache.set(key, null)
           return of(null)
         })
-      );
+      )
   }
 
   /* Precarga la letra de la siguiente canción en segundo plano */

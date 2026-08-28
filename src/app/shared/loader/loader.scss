@@ -76,3 +76,18 @@
       calc(10 * var(--size)) calc(50 * var(--size));
   }
 }
+
+.loader-dots {
+  .loader-dot {
+    display: inline-block;
+    animation: loader-blink 1.4s infinite;
+    
+    &:nth-child(2) { animation-delay: 0.2s; }
+    &:nth-child(3) { animation-delay: 0.4s; }
+  }
+}
+
+@keyframes loader-blink {
+  0%, 20% { opacity: 0; }
+  40%, 100% { opacity: 1; }
+}

@@ -1,8 +1,7 @@
-<main class="relative min-h-screen w-full select-none">
+<main class="min-h-screen select-none" [ngClass]="bgClass">
+    <div class="relative min-h-screen w-full flex items-center justify-center p-4 transition-all duration-200" [class.wave-background]="isMain" [class.wave-background-game]="isQuiz" [class.wave-background-score]="isScore">
+        <router-outlet></router-outlet>
+    </div>
 
-  <div class="relative min-h-screen w-full flex items-center justify-center p-4 transition-colors duration-500" [ngClass]="bgClass">
-    <router-outlet></router-outlet>
-  </div>
-
-  <app-modal></app-modal>
+    <app-modal></app-modal>
 </main>

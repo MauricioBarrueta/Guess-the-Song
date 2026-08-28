@@ -1,22 +1,20 @@
- <form class="w-full">
+<form class="w-full">
     <label for="counter-input" class="block text-base md:text-lg mb-1 text-left">Cantidad de canciones</label> 
     
     <div class="flex items-center justify-start flex-wrap mb-2">
-        <div class="flex justify-end">
-            <button type="button" id="dec-btn" class="flex items-center justify-center h-12 bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-sm md:text-base font-medium py-3 px-4 border-b-4 border-[var(--night)] hover:border-white rounded-l-lg cursor-pointer transition-all duration-200" (click)="updateQty(quantity - 5)">
-                -
-            </button>
+        <button class="h-[45px] flex items-center justify-center bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-sm font-medium py-3 px-4 border-b-4 border-[var(--night)] hover:border-white disabled:bg-[var(--dolphin-navy)] hover:disabled:bg-[var(--dolphin-navy)] hover:disabled:border-[var(--night)] disabled:text-[var(--dark-silver)] disabled:cursor-not-allowed rounded-l-lg cursor-pointer transition-all duration-200"
+            [disabled]="quantity <= 5" (click)="updateQty(quantity - 5)" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
+                <i class="fa-solid fa-minus text-[10px]" [ngClass]="mouseEnter ? 'fa-shake' : ''"></i>
+        </button>     
+
+        <div class="w-20 flex justify-center">
+            <input type="text" id="counter-input" name="quantity" min="5" max="25" maxlength="2" step="5" class="w-full h-[45px] text-center bg-white text-[var(--night)] text-sm md:text-base py-2 px-4 border border-b-4 border-[var(--night)] appearance-none focus:outline-none focus:ring-0 cursor-default select-none" [(ngModel)]="quantity" (ngModelChange)="updateQty(quantity)" (keydown)="onKeyDown($event)" required readonly>
         </div>
 
-        <div class="w-20 shrink-0 flex justify-center">
-            <input type="text" id="counter-input" name="quantity" min="5" max="25" maxlength="2" step="5" class="w-full h-12 text-center bg-white text-[var(--night)] text-sm md:text-base border border-b-4 border-[var(--night)] appearance-none focus:outline-none focus:ring-0 cursor-default select-none" [(ngModel)]="quantity" (ngModelChange)="updateQty(quantity)" (keydown)="onKeyDown($event)" required readonly>
-        </div>
-
-        <div class="flex justify-start">
-            <button type="button" id="inc-btn" class="flex items-center justify-center h-12 bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-sm md:text-base font-medium py-3 px-4 border-b-4 border-[var(--night)] hover:border-white rounded-r-lg cursor-pointer transition-all duration-200" (click)="updateQty(quantity + 5)">
-                +
-            </button>
-        </div>
+        <button class="h-[45px] flex items-center justify-center bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-sm font-medium py-3 px-4 border-b-4 border-[var(--night)] hover:border-white disabled:bg-[var(--dolphin-navy)] hover:disabled:bg-[var(--dolphin-navy)] hover:disabled:border-[var(--night)] disabled:text-[var(--dark-silver)] disabled:cursor-not-allowed rounded-r-lg cursor-pointer transition-all duration-200"
+            [disabled]="quantity >= 25" (click)="updateQty(quantity + 5)" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
+                <i class="fa-solid fa-plus text-[10px]" [ngClass]="mouseEnter ? 'fa-shake' : ''"></i>
+        </button>  
         
         <small class="w-full text-xs text-left tracking-wide text-gray-300 whitespace-nowrap mt-2">También puedes usar las teclas ↑ ↓</small>
     </div>

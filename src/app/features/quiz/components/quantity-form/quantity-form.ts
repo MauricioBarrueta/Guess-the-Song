@@ -1,15 +1,18 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-quantity-form',
-  imports: [ FormsModule ],
+  imports: [CommonModule, FormsModule],
   templateUrl: './quantity-form.html',
 })
 export class QuantityForm {
 
   @Input({ required: true }) quantity!: number
   @Output() quantityChange = new EventEmitter<number>()
+
+  mouseEnter: boolean = false
 
   /* Controla la cantidad ingresada, impidiendo que sea mayor al límite */
   updateQty(value: number) {

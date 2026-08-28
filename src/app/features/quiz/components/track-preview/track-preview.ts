@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { AlbumCover } from './album-cover/album-cover';
 import { CommonModule } from '@angular/common';
 
@@ -17,7 +17,13 @@ export class TrackPreview implements OnChanges {
   @Input({ required: true }) albumCover!: string
   @Input() instrText = true /* Cambia el texto dependiendo en dónde sea llamado el componente */
 
+  @Output() previewPlayed = new EventEmitter<string>() /* Emite el preview cuando comienza su reproducción */
+  @Output() previewError = new EventEmitter<string>() /* Emite el preview cuando presenta un error al intentar reproducirlo */
+  @Input() hasPreviewError = false /* Recibe el estado que determina si el botón debe deshabilitarse */
+
   mouseEnter: boolean = false
+
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     /* Evita que el preview anterior continúe reproduciéndose al cambiar de canción */
@@ -34,26 +40,54 @@ export class TrackPreview implements OnChanges {
   /* Controla la reproducción del preview y actualiza el estado del botón */  
   togglePlay(): void {
 
-    /* Evita reproducir el audio si el preview no esta disponible */
-    if (!this.hasPreview) return
+    /* Evita reproducir el audio si el preview no está disponible */
+    if (!this.hasPreview || !this.preview) return
 
     const audio = this.audioPlayer.nativeElement
-    if (!audio || !this.preview) return
 
-    /* Captura errores durante la carga o reproducción del preview */
+    /* Captura errores síncronos durante la carga o reproducción del preview */    
     try {
-      if (audio.paused) {
-        /* Carga el nuevo preview antes de iniciar la reproducción */
+      if(audio.paused) {
         audio.src = this.preview 
         audio.load()
+
+        /* Detecta errores al cargar el recurso de audio */        
+        audio.onerror = () => {
+          /* Marca y registra el preview como no disponible para mantener el botón deshabilitado aunque cambie de canción */
+          this.hasPreviewError = true
+          this.previewError.emit(this.preview)
+
+          this.isPlaying = false
+        }
+
         audio.play()
-        this.isPlaying = true
+          .then(() => {
+            this.isPlaying = true
+            this.cdr.detectChanges()
+
+            /* Emite el evento únicamente cuando la Promise se resuelve correctamente */
+            this.previewPlayed.emit(this.preview)
+          })
+          /* Captura errores durante la reproducción */
+          .catch((err) => {
+
+            /* Detecta si el navegador canceló la reproducción y detiene el audio */
+            if (err.name === 'AbortError') {
+              this.isPlaying = false
+              return
+            }
+            console.error('Error reproduciendo preview:', err)
+            this.isPlaying = false
+          })
+
       } else {
         audio.pause()
         this.isPlaying = false
       }
     } catch (err) {
       console.error('Error reproduciendo preview:', err)
+  
+      this.isPlaying = false    
     }
   }
 
@@ -73,7 +107,7 @@ export class TrackPreview implements OnChanges {
     if (!audio) return
 
     audio.pause()
-    audio.currentTime = 0
+    audio.src = ''
     this.isPlaying = false
   }
 }

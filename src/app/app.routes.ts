@@ -5,6 +5,7 @@ import { Score } from './features/quiz/pages/score/score';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'main', pathMatch: 'full' },
+    
     { path: 'main', component: Main },
     { path: 'quiz', component: Game },
     { path: 'score', component: Score },

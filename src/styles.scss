@@ -19,18 +19,35 @@ body { margin: 0; }
     --rich-cerulean: #2e6f95ff;
     --cerulean: #1780a1ff;
     --pacific-cyan: #0091adff;
-
     --dolphin-navy: #6B667A;
+    --charade: #292D3A;
     --night: #1F2330;
     --dark-silver: #b0b0b0;
+    --glossy-grey: #d0d0d0;
     --sea-green: #2F855A;
     --light-carmine-pink: #A53A5A; 
+    --red-love: #C0394F;
     --bright-gold: #FFD54F;
     --electric-orange: #ff5e00;
 }
 
+/* Background Image */
+.wave-background { background: url('/layered-steps-haikei-score.svg') no-repeat bottom / 100% auto; }
+.wave-background-game { background: url('/layered-steps-haikei-game.svg') no-repeat center / 100% auto; }
+.wave-background-score { background: url('/layered-steps-haikei.svg') no-repeat center / 100% auto; }
+
 .text-shadow-3d { text-shadow: 2px 4px 0 rgba(26, 28, 26, 1) }
 .outline-text-shadow { text-shadow: -1px -1px 0 var(--night), 1px -1px 0 var(--night), -1px  1px 0 var(--night), 1px  1px 0 var(--night); }
 .shadow-3d { box-shadow: 0 4px 6px rgba(0, 0, 0, 1) }
-.drop-3d { filter: drop-shadow(2px 4px 0 rgb(26, 28, 26)) }
+.drop-3d { filter: drop-shadow(2px 4px 0 rgb(26 28 26)); }
 .one-time-animation { animation-iteration-count: 1; }
+
+/* @layer utilities: Permite definir clases de utilidad personalizadas que se integran con las utilidades de Tailwind */
+@layer utilities {
+    .drop-3d-effect { 
+        filter: drop-shadow(2px 3px 0 rgb(26 28 26));
+    }
+    .drop-3d-effect:hover { 
+        filter: drop-shadow(2px 3px 0 rgb(255 255 255)); 
+    }
+}

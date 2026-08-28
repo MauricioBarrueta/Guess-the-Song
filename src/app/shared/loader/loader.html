@@ -1,5 +1,12 @@
-<div class="flex flex-col items-center justify-center py-8">
+<div class="flex flex-col items-center justify-center p-4">
     <span class="loader drop-3d"></span>
 
-    <p class="w-full text-base md:text-xl text-white font-bold tracking-wide text-shadow-3d mt-6">{{ text }}</p>
+    <p class="w-full text-lg md:text-xl font-medium text-center tracking-wider text-white text-shadow-3d mt-6 md:mt-8">
+        {{ text }}
+        <span class="loader-dots">
+            <span class="loader-dot">.</span>
+            <span class="loader-dot">.</span>
+            <span class="loader-dot">.</span>
+        </span>
+    </p>
 </div>

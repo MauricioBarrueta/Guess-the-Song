@@ -34,6 +34,9 @@ export class Modal implements OnInit, OnDestroy {
     this.modalService.modalData$.subscribe(data => {
       this.modalData = data
       this.isVisible = true 
+
+      /* Fuerza la detección de cambios para actualizar la vista al recibir el modal */
+      this.cdr.detectChanges() 
       
       if (data.autoCloseMs) {
         this.startCountdown(data.autoCloseMs)
@@ -43,6 +46,20 @@ export class Modal implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.clearTimers()
+  }
+
+  /* Devuelve el color del icono según el tipo de modal */
+  iconColor(): string {
+    switch (this.modalData.type) {
+      case 'warning':
+        return 'var(--bright-gold)'
+
+      case 'error':
+        return 'var(--red-love)'
+
+      default:
+        return 'var(--glossy-grey)'
+    }
   }
 
   /* Inicia la cuenta regresiva y programa el cierre automático del modal */

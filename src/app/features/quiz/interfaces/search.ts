@@ -1,7 +1,7 @@
 export interface Search {
   data: SearchItem[]
   total: number
-  next: string
+  next?: string
 }
 
 export interface SearchItem {
