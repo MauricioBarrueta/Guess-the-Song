@@ -1,5 +1,7 @@
 export const environment = {
-    // deezerApi: 'https://api.deezer.com',
-    // lyricsOvh: 'https://api.lyrics.ovh/v1' //{artist}/{title}
-    lrclibAPI: 'https://lrclib.net/api'
+    lrclibAPI: 'https://lrclib.net/api',
+
+    /* Proxy local utilizado durante el desarrollo para evitar restricciones CORS */
+    production: false,
+    deezerApiUrl: '/deezer'
 };

@@ -51,7 +51,10 @@ export class Main {
 
           return genres
         }),
-        catchError((error) => {
+        catchError((error) => { 
+          /* Notifica que terminó la carga aunque haya ocurrido un error */
+          this.mainService.notifyListLoaded()
+
           this.modalHandler.resultModal(
             'fa-solid fa-circle-xmark',
             'Error al obtener las opciones', 'No fue posible obtener los géneros. Inténtalo de nuevo',

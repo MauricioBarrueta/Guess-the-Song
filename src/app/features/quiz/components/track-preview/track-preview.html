@@ -19,7 +19,7 @@
 
                 <div class="flex items-center justify-center gap-px h-12 bg-white border-b-4 border-[var(--night)] rounded-r-lg px-3">
                     @for (_ of [1, 2, 3, 4, 5]; track $index) {
-                        <img class="h-[14px] md:h-[18px] filter brightness-0" [class.animate-audio-wave]="isPlaying" [style.animation-delay.ms]="$index * 120" src="/audio-code.svg" alt="" loading="eager">
+                        <img class="h-[14px] md:h-[18px] filter brightness-0" [class.audio-wave-extra]="$index > 2" [class.animate-audio-wave]="isPlaying" [style.animation-delay.ms]="$index * 120" src="/audio-code.svg" alt="" loading="eager">
                     }
                 </div>
             </div>

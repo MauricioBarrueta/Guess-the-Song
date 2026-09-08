@@ -62,5 +62,142 @@ For more information on using the Angular CLI, including detailed command refere
 
 ## Notas
 
-Se creó un proxy para redirigir las peticiones a Deezer y evitar las restricciones CORS del navegador
-De esta forma la aplicación consume rutas como ('/deezer/...') en lugar de acceder directamente a ('https://api.deezer.com')
+### Proxy para desarrollo
+
+Durante el desarrollo local se utiliza un proxy de Angular (`proxy.conf.json`) para redirigir las peticiones a Deezer y evitar las restricciones CORS del navegador.
+
+De esta forma, la aplicación utiliza rutas como `/deezer/...` en lugar de acceder directamente a `https://api.deezer.com`.
+
+Este proxy únicamente funciona con el servidor de desarrollo de Angular y no forma parte del despliegue de la aplicación.
+
+### Proxy para producción
+
+En producción, debido a las restricciones CORS de Deezer, las peticiones se realizan mediante este Cloudflare Worker, que funciona como intermediario entre Guess The Song y la API de Deezer.
+
+```text
+Desarrollo:
+Guess The Song → proxy.conf.json → Deezer API
+
+Producción:
+Guess The Song → Cloudflare Worker → Deezer API
+```
+
+
+# Deezer Proxy
+
+Proxy desarrollado con **Cloudflare Workers** para permitir que [Guess The Song](https://github.com/MauricioBarrueta/Guess-the-Song.git) consuma la API de Deezer desde producción.
+
+## ¿Por qué se necesita?
+
+La API de Deezer no incluye la cabecera CORS necesaria para permitir que una aplicación web realice solicitudes directamente desde el navegador.
+
+Por ejemplo, una solicitud directa desde Guess The Song:
+
+```text
+Guess The Song → https://api.deezer.com/genre
+```
+
+es bloqueada por el navegador debido a CORS, aunque Deezer responda correctamente con un código `200`.
+
+## Solución
+
+El proyecto utiliza un **Cloudflare Worker como proxy** entre Guess The Song y Deezer:
+
+```text
+Guess The Song
+      ↓
+Cloudflare Worker
+      ↓
+Deezer API
+```
+
+El navegador realiza la solicitud al Worker y este se encarga de solicitar los datos a Deezer. Al devolver la respuesta, el Worker agrega la cabecera CORS necesaria para que Guess The Song pueda leerla.
+
+## Desarrollo y producción
+
+Guess The Song utiliza diferentes mecanismos dependiendo del entorno.
+
+### Desarrollo
+
+En localhost se utiliza el proxy de Angular definido en `proxy.conf.json`:
+
+```text
+Angular
+   ↓
+/deezer
+   ↓
+proxy.conf.json
+   ↓
+Deezer API
+```
+
+### Producción
+
+En Firebase Hosting se utiliza el Worker de Cloudflare:
+
+```text
+Angular
+   ↓
+Cloudflare Worker
+   ↓
+Deezer API
+```
+
+La URL del Worker se configura mediante `environment.ts`, mientras que `environment.development.ts` continúa utilizando `/deezer` para el proxy local.
+
+## Estructura
+
+```text
+deezer-proxy/
+├── src/
+│   └── index.ts
+├── package.json
+├── package-lock.json
+└── wrangler.jsonc
+```
+
+## Ejecución local
+
+Instalar las dependencias:
+
+```bash
+npm install
+```
+
+Iniciar el Worker en modo desarrollo:
+
+```bash
+npm run dev
+```
+
+El Worker estará disponible en:
+
+```text
+http://localhost:8787
+```
+
+Por ejemplo:
+
+```text
+http://localhost:8787/deezer/genre
+```
+
+debe devolver la respuesta del endpoint `genre` de Deezer.
+
+## Deploy
+
+Para publicar el Worker en Cloudflare:
+
+```bash
+npm run deploy
+```
+
+Después del despliegue, Cloudflare proporcionará la URL pública del Worker.
+
+## Tecnologías
+
+* Cloudflare Workers
+* TypeScript
+* Wrangler
+* Deezer API
+

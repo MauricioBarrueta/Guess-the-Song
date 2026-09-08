@@ -9,7 +9,7 @@
         <p class="w-full text-lg md:text-xl font-bold tracking-wide pb-4 mt-2 text-shadow-3d">¿Qué canción es?</p>
         <div class="grid grid-cols-2 gap-2 md:gap-3 justify-center"> 
             @for (answer of answerOptions[currentTrackIndex]; track answer.id) {
-                <button [disabled]="alreadyAnswered(currentTrackIndex) || (!hasPlayedPreview(currentTrack.preview) && !failedPreviews.has(currentTrack.preview))" [ngClass]=" alreadyAnswered(currentTrackIndex) ? (answer.id === currentTrack.id ? '!bg-white disabled:!border-[var(--sea-green)]' : '!bg-white disabled:!border-[var(--light-carmine-pink)]') : ''" (click)="onAnswerSelected(answer.title)"
+                <button [disabled]="alreadyAnswered(currentTrackIndex) || (!hasPlayedPreview(currentTrack.preview) && !failedPreviews.has(currentTrack.preview))" [ngClass]=" alreadyAnswered(currentTrackIndex) ? (answer.id === currentTrack.id ? '!bg-gray-200 !shadow-none disabled:!border-[var(--sea-green)]' : '!bg-gray-200 !shadow-none disabled:!border-[var(--light-carmine-pink)]') : ''" (click)="onAnswerSelected(answer.title)"
                     class="min-h-16 md:min-h-18 flex items-center justify-center text-xs sm:text-sm font-medium text-[var(--night)] bg-white hover:bg-[var(--dark-silver)] shadow-lg py-3 px-4 border-b-4 border-[var(--night)] hover:border-white rounded-lg cursor-pointer disabled:bg-[var(--glossy-grey)] hover:disabled:bg-[var(--glossy-grey)] disabled:text-[var(--dolphin-navy)] disabled:border-white disabled:cursor-not-allowed transition-all duration-200">
                         {{ gameService.cleanTrackTitle(answer.title) }}
                 </button>

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Genre } from '../interfaces/genre';
 import { Router } from '@angular/router';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,8 @@ export class MainService {
 
   constructor( private http: HttpClient, private router: Router) {}  
 
-  private readonly api = '/deezer'
+  // private readonly api = '/deezer'
+  private readonly api = environment.deezerApiUrl
 
   /* Observables que notifican el inicio y final de la carga de la lista de géneros */
   private listLoadedSubject = new Subject<void>()

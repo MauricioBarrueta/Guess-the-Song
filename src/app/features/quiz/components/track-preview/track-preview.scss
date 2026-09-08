@@ -8,3 +8,10 @@
   animation: audio-wave 1s ease-in-out infinite;
   will-change: transform;
 }
+
+/* Oculta las ondas de audio adicionales en pantallas pequeñas */
+.audio-wave-extra {
+    @media (max-width: 680px) {
+        display: none;
+    }
+}

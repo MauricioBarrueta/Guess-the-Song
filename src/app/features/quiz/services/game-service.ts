@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { catchError, forkJoin, map, Observable, of, Subject, switchMap, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Search, SearchItem } from '../interfaces/search';
-import { environment } from '../../../../environments/environment.development';
+import { environment } from '../../../../environments/environment';
 import { Lyrics } from '../interfaces/lyrics';
 import { Artist } from '../interfaces/artist';
  
@@ -11,8 +11,9 @@ import { Artist } from '../interfaces/artist';
 })
 export class GameService {
 
-  private readonly api = '/deezer' 
-
+  // private readonly api = '/deezer' 
+  private readonly api = environment.deezerApiUrl
+  
   private lyricsCache = new Map<string, Lyrics | null>() /* Guarda en caché las letras consultadas para reutilizarlas durante la partida */
   
   private viewedLyrics = new Set<number>() /* Registra las preguntas cuya letra ya fue visualizada 1 vez */
