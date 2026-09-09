@@ -29,19 +29,19 @@
 
             <button (click)="prevQuestion()" [disabled]="currentTrackIndex === 0 || isGameFinished" [ngClass]="prevAnswered ? '!bg-white text-[var(--night)] hover:!bg-[var(--dark-silver)] !border-[var(--night)] hover:!border-white' : ''"
                 class="w-auto md:w-[145px] flex items-center justify-center gap-3 bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-sm md:text-base font-medium py-3 px-4 border-b-4 border-[var(--night)] hover:border-white disabled:bg-[var(--dolphin-navy)] hover:disabled:bg-[var(--dolphin-navy)] hover:disabled:border-[var(--night)] disabled:text-[var(--dark-silver)] disabled:cursor-not-allowed rounded-lg cursor-pointer transition-all duration-200" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
-                    <i class="fa-solid fa-angle-left one-time-animation disabled:text-[var(--dark-silver)] text-sm" [ngClass]="mouseEnter && currentTrackIndex > 0 ? 'fa-shake' : ''"></i>Anterior
+                    <i class="fa-solid fa-angle-left one-time-animation disabled:text-[var(--dark-silver)] text-sm" [ngClass]="mouseEnter && currentTrackIndex > 0 ? 'fa-jello' : ''"></i>Anterior
             </button>
 
             <button (click)="nextQuestion()" [disabled]="currentTrackIndex === gameTracks.length - 1 || isGameFinished" [ngClass]="nextAnswered ? '!bg-white text-[var(--night)] hover:!bg-[var(--dark-silver)] !border-[var(--night)] hover:!border-white' : ''"
                 class="w-auto md:w-[145px] flex items-center justify-center gap-3 bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-sm md:text-base font-medium py-3 px-4 border-b-4 border-[var(--night)] hover:border-white disabled:bg-[var(--dolphin-navy)] hover:disabled:bg-[var(--dolphin-navy)] hover:disabled:border-[var(--night)] disabled:text-[var(--dark-silver)] disabled:cursor-not-allowed rounded-lg cursor-pointer transition-all duration-200" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
-                    Siguiente<i class="fa-solid fa-angle-right one-time-animation disabled:text-[var(--dark-silver)] text-sm" [ngClass]="mouseEnter && currentTrackIndex < gameTracks.length - 1 ? 'fa-shake' : ''"></i>
+                    Siguiente<i class="fa-solid fa-angle-right one-time-animation disabled:text-[var(--dark-silver)] text-sm" [ngClass]="mouseEnter && currentTrackIndex < gameTracks.length - 1 ? 'fa-jello' : ''"></i>
             </button>
         </div>
 
         <div class="mt-2 sm:mt-0">
             <div class="flex items-center justify-between mb-2 md:mb-4">
                 <button class="flex justify-center items-center gap-2 text-xs md:text-sm text-shadow-3d hover:text-gray-300 cursor-pointer transition-all duration-200" (click)="showModal()" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
-                    <i class="fa-solid fa-right-from-bracket one-time-animation" [ngClass]="mouseEnter ? 'fa-shake' : ''"></i>Salir
+                    <i class="fa-solid fa-right-from-bracket one-time-animation" [ngClass]="mouseEnter ? 'fa-jello' : ''"></i>Salir
                 </button>
 
                 <p class="text-xs md:text-sm text-[var(--glossy-grey)]">Canción <span class="font-black text-white">{{ currentTrackIndex + 1 }}</span> de <span class="font-black text-white">{{ gameTracks.length }}</span></p>

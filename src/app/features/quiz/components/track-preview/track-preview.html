@@ -13,7 +13,7 @@
 
                 <button class="w-auto md:w-[130px] h-12 flex items-center justify-center gap-3 bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-sm md:text-base font-medium py-3 px-4 border-b-4 border-[var(--night)] hover:border-white rounded-l-lg cursor-pointer transition-all duration-200 disabled:bg-[var(--dolphin-navy)] hover:disabled:bg-[var(--dolphin-navy)] hover:disabled:border-[var(--night)] disabled:text-[var(--dark-silver)] disabled:cursor-not-allowed"
                     (click)="togglePlay()" [disabled]="!hasPreview || hasPreviewError" [title]="hasPreview ? 'Reproducir' : 'No disponible'" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
-                        <i class="fa-solid one-time-animation text-xs" [ngClass]="{ 'fa-pause': isPlaying, 'fa-play': !isPlaying, 'fa-shake': mouseEnter }"></i>
+                        <i class="fa-solid one-time-animation text-sm" [ngClass]="{ 'fa-pause': isPlaying, 'fa-play': !isPlaying, 'fa-jello': mouseEnter }"></i>
                         {{ isPlaying ? 'Pausar' : 'Escuchar' }}
                 </button>
 

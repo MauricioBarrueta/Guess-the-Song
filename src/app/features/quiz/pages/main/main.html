@@ -24,7 +24,7 @@
                                 <span class="text-sm md:text-lg font-extrabold">Difícil</span>
                             </div>
                             <button type="button" class="relative text-sm md:text-lg font-semibold text-shadow-3d hover:text-gray-300 cursor-pointer transition-all duration-200" (click)="showModal()" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
-                                Cambiar<i class="fa-solid fa-repeat one-time-animation ml-2" [ngClass]="mouseEnter ? 'fa-shake' : ''"></i>
+                                Cambiar<i class="fa-solid fa-repeat one-time-animation ml-1" [ngClass]="mouseEnter ? 'fa-wag' : ''"></i>
                             </button>
                         </div>
 
@@ -48,7 +48,7 @@
                         <div class="w-full flex justify-center gap-4">
                             <button [class.selected]="difficulty === 'easy'" class="difficulty-btn-easy w-1/2 flex items-center justify-center bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-sm md:text-base font-medium py-3 px-4 border-b-4 border-[var(--night)] hover:border-white rounded-lg cursor-pointer transition-all duration-200" (click)="selectDifficulty('easy')" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
                                 Fácil
-                                <span class="relative inline-flex items-center justify-center ml-3 one-time-animation" [ngClass]="{ 'fa-shake': mouseEnter || difficulty === 'easy' }">
+                                <span class="relative inline-flex items-center justify-center ml-3 one-time-animation" [ngClass]="{ 'fa-jello': mouseEnter || difficulty === 'easy' }">
                                     <i class="fa-solid fa-sun sun-icon absolute text-[var(--bright-gold)] pointer-events-none"></i>
                                     <i class="fa-solid fa-face-laugh-beam relative z-10"></i>
                                 </span>
@@ -56,7 +56,7 @@
 
                             <button [class.selected]="difficulty === 'hard'" class="difficulty-btn w-1/2 flex items-center justify-center bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-sm md:text-base font-medium py-3 px-4 border-b-4 border-[var(--night)] hover:border-white rounded-lg cursor-pointer transition-all duration-200" (click)="selectDifficulty('hard')" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
                                 Difícil
-                                <span class="relative inline-flex items-center justify-center ml-3 one-time-animation" [ngClass]="{ 'fa-shake': mouseEnter || difficulty === 'hard' }">
+                                <span class="relative inline-flex items-center justify-center ml-3 one-time-animation" [ngClass]="{ 'fa-jello': mouseEnter || difficulty === 'hard' }">
                                     <i class="fa-solid fa-fire fire-icon absolute text-[var(--electric-orange)] pointer-events-none"></i>
                                     <i class="fa-solid fa-skull relative z-10"></i>
                                 </span>
@@ -82,7 +82,7 @@
                             </div>
                             <button type="button" class="relative text-sm md:text-lg font-semibold text-shadow-3d hover:text-gray-300 cursor-pointer transition-all duration-200" (click)="showModal()" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
                                 Cambiar
-                                <i class="fa-solid fa-repeat one-time-animation ml-2" [ngClass]="mouseEnter ? 'fa-shake' : ''"></i>
+                                <i class="fa-solid fa-repeat one-time-animation ml-1" [ngClass]="mouseEnter ? 'fa-wag' : ''"></i>
                             </button>
                         </div>
 

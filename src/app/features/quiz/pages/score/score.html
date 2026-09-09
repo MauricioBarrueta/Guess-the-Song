@@ -29,7 +29,7 @@
                     </div>
 
                     <button type="submit" class="flex justify-center items-center gap-3 mx-auto w-full md:w-1/2 bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-sm md:text-base font-medium py-3 px-4 mt-4 sm:mt-6 border-b-4 border-[var(--night)] hover:border-white rounded-lg cursor-pointer transition-all duration-200" (click)="showingDetails = true" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
-                        Ver respuestas<i class="fa-solid fa-rectangle-list one-time-animation" [ngClass]="mouseEnter ? 'fa-shake' : ''"></i>
+                        Ver respuestas<i class="fa-solid fa-rectangle-list one-time-animation" [ngClass]="mouseEnter ? 'fa-jello' : ''"></i>
                     </button>
 
                     <div class="flex items-center justify-between flex-wrap mt-6 md:mt-8">
@@ -37,7 +37,7 @@
                             <span class="text-xs md:text-sm tracking-wide">¿Quieres volver a jugar?</span>
                         </div>
                         <button type="button" class="relative text-xs md:text-sm font-semibold text-shadow-3d hover:text-gray-200 cursor-pointer transition-all duration-200" (click)="openModal()" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
-                            Nueva partida<i class="fa-solid fa-repeat one-time-animation ml-2 text-xs" [ngClass]="mouseEnter ? 'fa-shake' : ''"></i>
+                            Nueva partida<i class="fa-solid fa-repeat one-time-animation ml-2 text-xs" [ngClass]="mouseEnter ? 'fa-wag' : ''"></i>
                         </button>
                     </div>
                 </div>    
@@ -80,7 +80,7 @@
 
                             <div class="flex justify-center sm:justify-between items-center gap-4 sm:gap-0 mt-6 mb-2">
                                 <button (click)="prevSlide()" class="w-auto md:w-[145px] flex items-center justify-center gap-3 bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-sm md:text-base font-medium py-3 px-4 border-b-4 border-[var(--night)] hover:border-white rounded-lg cursor-pointer transition-all duration-200" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
-                                    <i class="fa-solid fa-angle-left one-time-animation text-sm" [ngClass]="mouseEnter ? 'fa-shake' : ''"></i>Anterior
+                                    <i class="fa-solid fa-angle-left one-time-animation text-sm" [ngClass]="mouseEnter ? 'fa-jello' : ''"></i>Anterior
                                 </button>
                         
                                 <div class="hidden sm:flex justify-center items-center flex-wrap gap-3 mx-2 md:mx-4">
@@ -91,13 +91,13 @@
                                 </div>
                         
                                 <button (click)="nextSlide()" class="w-auto md:w-[145px] flex items-center justify-center gap-3 bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-sm md:text-base font-medium py-3 px-4 border-b-4 border-[var(--night)] hover:border-white rounded-lg cursor-pointer transition-all duration-200" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
-                                    Siguiente<i class="fa-solid fa-angle-right one-time-animation text-sm" [ngClass]="mouseEnter ? 'fa-shake' : ''"></i>
+                                    Siguiente<i class="fa-solid fa-angle-right one-time-animation text-sm" [ngClass]="mouseEnter ? 'fa-jello' : ''"></i>
                                 </button>
                             </div>
                         </div>
 
                         <button type="submit" class="flex justify-center items-center gap-3 mx-auto w-full sm:w-auto bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-sm md:text-base font-medium py-3 px-4 mt-4 border-b-4 border-[var(--night)] hover:border-white rounded-lg cursor-pointer transition-all duration-200" (click)="showingDetails = false" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
-                            Volver al resumen<i class="fa-solid fa-table-columns opacity-80 one-time-animation" [ngClass]="mouseEnter ? 'fa-shake' : ''"></i>
+                            Volver al resumen<i class="fa-solid fa-table-columns opacity-80 one-time-animation" [ngClass]="mouseEnter ? 'fa-jello' : ''"></i>
                         </button>   
 
                         <div class="flex items-center justify-between flex-wrap mt-6 md:mt-4">
@@ -105,7 +105,7 @@
                                 <span class="text-xs md:text-sm tracking-wide">¿Quieres volver a jugar?</span>
                             </div>
                             <button type="button" class="relative text-xs md:text-sm font-semibold text-shadow-3d hover:text-gray-200 cursor-pointer transition-all duration-200" (click)="openModal()" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
-                                Nueva partida<i class="fa-solid fa-repeat one-time-animation ml-2 text-xs" [ngClass]="mouseEnter ? 'fa-shake' : ''"></i>
+                                Nueva partida<i class="fa-solid fa-repeat one-time-animation ml-2 text-xs" [ngClass]="mouseEnter ? 'fa-wag' : ''"></i>
                             </button>
                         </div>
                 </div>

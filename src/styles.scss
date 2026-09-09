@@ -52,7 +52,7 @@ body { margin: 0; }
 .outline-text-shadow { text-shadow: -1px -1px 0 var(--night), 1px -1px 0 var(--night), -1px  1px 0 var(--night), 1px  1px 0 var(--night); }
 .shadow-3d { box-shadow: 0 4px 6px rgba(0, 0, 0, 1) }
 .drop-3d { filter: drop-shadow(2px 4px 0 rgb(26 28 26)); }
-.one-time-animation { animation-iteration-count: 1; animation-fill-mode: none; }
+.one-time-animation { animation-iteration-count: 1; animation-fill-mode: forwards; }
 
 /* @layer utilities: Permite definir clases de utilidad personalizadas que se integran con las utilidades de Tailwind */
 @layer utilities {

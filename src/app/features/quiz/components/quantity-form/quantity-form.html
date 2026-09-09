@@ -4,7 +4,7 @@
     <div class="flex items-center justify-start flex-wrap mb-2">
         <button class="h-[45px] flex items-center justify-center bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-sm font-medium py-3 px-4 border-b-4 border-[var(--night)] hover:border-white disabled:bg-[var(--dolphin-navy)] hover:disabled:bg-[var(--dolphin-navy)] hover:disabled:border-[var(--night)] disabled:text-[var(--dark-silver)] disabled:cursor-not-allowed rounded-l-lg cursor-pointer transition-all duration-200"
             [disabled]="quantity <= 5" (click)="updateQty(quantity - 5)" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
-                <i class="fa-solid fa-minus text-[10px]" [ngClass]="mouseEnter ? 'fa-shake' : ''"></i>
+                <i class="fa-solid fa-minus text-[10px] one-time-animation" [ngClass]="mouseEnter ? 'fa-jello' : ''"></i>
         </button>     
 
         <div class="w-20 flex justify-center">
@@ -13,7 +13,7 @@
 
         <button class="h-[45px] flex items-center justify-center bg-[var(--cherry-rose)] hover:bg-[var(--dark-raspberry)] text-sm font-medium py-3 px-4 border-b-4 border-[var(--night)] hover:border-white disabled:bg-[var(--dolphin-navy)] hover:disabled:bg-[var(--dolphin-navy)] hover:disabled:border-[var(--night)] disabled:text-[var(--dark-silver)] disabled:cursor-not-allowed rounded-r-lg cursor-pointer transition-all duration-200"
             [disabled]="quantity >= 25" (click)="updateQty(quantity + 5)" (mouseenter)="mouseEnter = true" (mouseleave)="mouseEnter = false">
-                <i class="fa-solid fa-plus text-[10px]" [ngClass]="mouseEnter ? 'fa-shake' : ''"></i>
+                <i class="fa-solid fa-plus text-[10px] one-time-animation" [ngClass]="mouseEnter ? 'fa-jello' : ''"></i>
         </button>  
         
         <small class="w-full text-xs text-left tracking-wide text-gray-300 whitespace-nowrap mt-2">También puedes usar las teclas ↑ ↓</small>
