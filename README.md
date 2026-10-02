@@ -1,3 +1,12 @@
+🇲🇽 Sitio web desarrollado con Angular y TypeScript, SCSS y principalmente Tailwind CSS, publicado con Firebase Hosting e integrado con Deezer API y LRCLIB API, utilizando Cloudflare Workers como proxy para Deezer.
+
+🇺🇸 Website developed with Angular and TypeScript, using SCSS and primarily Tailwind CSS, deployed on Firebase Hosting and integrated with Deezer API and LRCLIB API, using Cloudflare Workers as a proxy for Deezer.
+
+🔗https://guess-the-song-74c9e.web.app/
+
+<img width="1366" height="635" alt="guess-the-song" src="https://github.com/user-attachments/assets/f208190e-4c23-4449-bdfe-8ae20470ce09" />
+
+
 # GuessTheSong
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.12.
